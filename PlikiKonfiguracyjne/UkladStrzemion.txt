@@ -1,0 +1,22 @@
+#
+#Informacje: 
+# Linie, które zaczynaj¹ siê od hashtaga s¹ komentarzami i program nie bierze ich pod uwagê - mo¿na tutaj pisaæ dowolne treœci
+# Kolejnoœæ pól komend nie powinna mieæ znaczenia - program sam wybierz w³aœciwe dane
+#
+# Program zaczyna czytaæ plik od komendy UKLADSTRZEMION-START
+# Ni¿ej podajemy kolejne odstêpy strzemion - ka¿dy odstêp w nowej linii
+# Pierwszy wiersz to odleg³oœæ pierwszego strzemienia od wierzchu kosza
+# Jeœli chcemy jak¹ odleg³oœæ powtórzyæ X razy to po odleg³oœci zapisujemy *X, np. 15 cm przez 12 razy: 15*12
+#
+#
+#
+#
+UKLADSTRZEMION-START
+10
+15x
+15
+30*63
+UKLADSTRZEMION-KONIEC
+MIN-ODLEGLOSC-OD-KONCA-KOSZA
+24
+KONIEC-PLIKU

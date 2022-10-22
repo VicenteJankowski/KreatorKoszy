@@ -618,6 +618,11 @@ void CreateDxf::KotaWysokosciowa(Punkt punktPoczatkowy, float rzedna, string opi
 
 void CreateDxf::rysujWymiarNormalny(WymiarNormalny Wymiar, Warstwa typWarstwy){
 	
+	if(Wymiar.getPunktStartowy().getX() == Wymiar.getPunktKoncowy().getX() && Wymiar.getPunktStartowy().getY() == Wymiar.getPunktKoncowy().getY()){
+		cout << endl << "UWAGA! Rysujê zerowy wymiar.";
+		cout << "PK: " << Wymiar.getPunktStartowy().getX() << ", " << Wymiar.getPunktStartowy().getY() << " | PS: " << Wymiar.getPunktKoncowy().getX() << ", " << Wymiar.getPunktKoncowy().getY();
+	}
+	
 	this->ZapisDoPliku << 0		  						<< endl;
 	this->ZapisDoPliku << "DIMENSION"  					<< endl;
 	this->ZapisDoPliku << 5		 				   	    << endl;
@@ -750,12 +755,10 @@ void CreateDxf::rysujWymiarPromienia(WymiarNormalny Wymiar, Warstwa typWarstwy){
 	this->ZapisDoPliku << Wymiar.getPunktStartowy().getY()				<< endl;
 	this->ZapisDoPliku << 35		   	    							<< endl;
 	this->ZapisDoPliku << 0.0					   						<< endl;
-	this->ZapisDoPliku << 40		   	    							<< endl;
-	this->ZapisDoPliku << 0.0					   						<< endl;
 
 	this->ZapisDoPliku << 1001		   	    							<< endl;
-	this->ZapisDoPliku << "ACAD_DSTYLE_DIMRADIAL_EXTE"					<< endl;
-/*	this->ZapisDoPliku << 1000		   	    							<< endl;
+	this->ZapisDoPliku << "ACAD"		   	    						<< endl;
+	this->ZapisDoPliku << 1000		   	    							<< endl;
 	this->ZapisDoPliku << "DSTYLE"		   	    						<< endl;
 	this->ZapisDoPliku << 1002		   	    							<< endl;
 	this->ZapisDoPliku << "{"		   	    							<< endl;
@@ -767,10 +770,10 @@ void CreateDxf::rysujWymiarPromienia(WymiarNormalny Wymiar, Warstwa typWarstwy){
 	this->ZapisDoPliku << 271		   	    							<< endl;	//dokladnosc wymiaru: kod
 	this->ZapisDoPliku << 1070		   	    							<< endl;
 	this->ZapisDoPliku << Wymiar.getDokladnosc()						<< endl;	//dokladnosc wymiaru: liczba zer po przecinku
-	this->ZapisDoPliku << 1070		   	    							<< endl;
+/*	this->ZapisDoPliku << 1070		   	    							<< endl;
 	this->ZapisDoPliku << 77	   	    								<< endl;	//tutaj okreœla, ¿e wymiary maj¹ byæ na zewn¹trz, teraz zdefiniowane to jest w stylu w nag³ówkach
 	this->ZapisDoPliku << 1070		   	    							<< endl;
-	this->ZapisDoPliku << 2		   	    							    << endl;
+	this->ZapisDoPliku << 2		   	    							    << endl;*/
 	this->ZapisDoPliku << 1070		   	    							<< endl;
 	this->ZapisDoPliku << 279		   	    							<< endl;
 	this->ZapisDoPliku << 1070		   	    							<< endl;
@@ -784,7 +787,7 @@ void CreateDxf::rysujWymiarPromienia(WymiarNormalny Wymiar, Warstwa typWarstwy){
 	this->ZapisDoPliku << 1040		   	    							<< endl;
 	this->ZapisDoPliku << Wymiar.getSkala()								<< endl;
 	this->ZapisDoPliku << 1002		   	    							<< endl;
-	this->ZapisDoPliku << "}"		   	    							<< endl;*/
+	this->ZapisDoPliku << "}"		   	    							<< endl;
 
 }
 

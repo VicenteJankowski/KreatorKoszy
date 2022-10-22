@@ -34,19 +34,19 @@ int main()
 		cout << "GOLDEN EDITION";
 		
 		SetConsoleTextAttribute(hConsole, 23);
-		cout << " - v 4.22.12";
+		cout << " - v 4.23.2";
 		
-		//by³ b³¹d przy pomijaniu rzêdnych przekroju, jeœli u¿ytkownik poda³ je spoza zakresu - poprawione
+		//by³ b³¹d przy pominianiy rzêdnych przekroju, jeœli u¿ytkownik poda³ je spoza zakresu - poprawione
 		
 		SetConsoleTextAttribute(hConsole, 207);
 		cout << "\nAutor: Micha³ Jankowski\n\n";
-		
+		/*
 		if(!sprawdzLicencjaZakodowanaWProgramie())
 			throw "Brak licencji. Program nie zostanie uruchomiony.";
 			//throw "Program wygenerowa³ niespotykany b³¹d. Zostanie zamkniêty.";
 		
 		system("PAUSE");
-		
+		*/
 		if(!sprawdz_folder(folderpathData)) 
 			cout << "Znaleziono folder "<< folderpathData <<"\n";
 		else{
@@ -68,11 +68,6 @@ int main()
 			mkdir(folderpathResults.c_str());
 		}
 		
-		DIR *pdir = NULL;
-		struct dirent *pent = NULL;
-		
-		pdir = opendir (folderpathData.c_str());
-		
 		string filename;
 		int error_nr = 0;
 		
@@ -81,18 +76,73 @@ int main()
 		
 		DaneWejscioweKosz Dane;
 		CreateDxf Draw(ZapisDoDXF);
-		UstawieniaRysunekKoszZbrojeniowy UstawieniaRysunku;
+		
+		UstawieniaKoszZbrojeniowy *UstawieniaKosza = new UstawieniaKoszZbrojeniowy;
+		UstawieniaRysunekKoszZbrojeniowy *UstawieniaRysunku = new UstawieniaRysunekKoszZbrojeniowy;
+		
+		try{
+			
+			fstream PlikZakladyPretow;
+		    otworz_plik("ZakladyPretow.txt", folderpathPlikiKonfiguracyjne, PlikZakladyPretow);
+		    czytaj_plik_ZakladyPretow(PlikZakladyPretow, *UstawieniaKosza);
+			
+		}
+		catch(const char* ErrorTekst){
+			
+			SetConsoleTextAttribute(hConsole, 236);
+			cout << endl << "Nie uda³o siê odnaleŸæ lub otworzyæ pliku z ustawieniami zak³adów prêtów. Wczytano domyœlny zak³ad równy 100cm" << endl;
+			
+			Beep(523,500);
+			Sleep(125);
+			Beep(523,500);
+			
+			system("PAUSE");
+			SetConsoleTextAttribute(hConsole, 207);
+		}
+		
+		try{
+			
+			fstream PlikUkladStrzemion;
+		    otworz_plik("UkladStrzemion.txt", folderpathPlikiKonfiguracyjne, PlikUkladStrzemion);
+		    czytaj_plik_UkladStrzemion(PlikUkladStrzemion, *UstawieniaKosza);
+			
+		}
+		catch(const char* ErrorTekst){
+			
+			UstawieniaKosza->setUkladStrzemion(10, 0, 0);
+			UstawieniaKosza->setUkladStrzemion(1, 0, 1);
+			UstawieniaKosza->setUkladStrzemion(15, 1, 0);
+			UstawieniaKosza->setUkladStrzemion(2, 1, 1);
+			UstawieniaKosza->setUkladStrzemion(30, 2, 0);
+			UstawieniaKosza->setUkladStrzemion(1, 2, 1);
+			UstawieniaKosza->setIlePozycjiUkladStrzemion(3);
+			
+			SetConsoleTextAttribute(hConsole, 236);
+			cout << endl << "Nie uda³o siê odnaleŸæ lub otworzyæ pliku z uk³adem strzemion. Wczytano domyœlny uk³ad 10cm, 15cm*2, 30cm" << endl;
+			
+			Beep(523,500);
+			Sleep(125);
+			Beep(523,500);
+			
+			system("PAUSE");
+			SetConsoleTextAttribute(hConsole, 207);
+		}
+		
 		Punkt punktPoczatkowy;
 		
 		//okreœla punkt pocz¹tkowy pierwszego kosza;
-		punktPoczatkowy.setX(UstawieniaRysunku.getPunktPoczatkowyPierwszegoKosza().getX());	
-		punktPoczatkowy.setY(UstawieniaRysunku.getPunktPoczatkowyPierwszegoKosza().getY());	
+		punktPoczatkowy.setX(UstawieniaRysunku->getPunktPoczatkowyPierwszegoKosza().getX());	
+		punktPoczatkowy.setY(UstawieniaRysunku->getPunktPoczatkowyPierwszegoKosza().getY());	
 		
 		Draw.DxfBegin();
 		
-		
 		int k = 0;
 		
+		
+		DIR *pdir = NULL;
+		struct dirent *pent = NULL;
+		
+		pdir = opendir (folderpathData.c_str());
 		while(pent = readdir(pdir)){
 			
 			try{
@@ -114,10 +164,9 @@ int main()
 						Dane.sprawdzCzySaWszystkieDane();
 						
 						//tworzenie pliku DXF
-						UstawieniaKoszZbrojeniowy UstawieniaKosza;
-						koszZbrojeniowy kosz(UstawieniaKosza, Dane, Dane.getSzerokoscKosza(0));
+						koszZbrojeniowy kosz(*UstawieniaKosza, Dane, Dane.getSzerokoscKosza(0));
 						
-						RysunekKoszZbrojeniowy Rysunek(UstawieniaRysunku, punktPoczatkowy);
+						RysunekKoszZbrojeniowy Rysunek(*UstawieniaRysunku, punktPoczatkowy);
 						cout << "\n\nGenerujê kosz " << kosz.getSzerokoscKosza();
 						Rysunek.generujRysunekKoszaZbrojeniowego(kosz, Dane);
 						
@@ -140,11 +189,11 @@ int main()
 							Rysunek.rysujKosz(Draw);
 							
 							//okreœla punkt pocz¹tkowy kolejnego kosza w poziomie;
-							punktPoczatkowy.setX(Rysunek.PrzekrojBB[0].Obrys[0].getWspolrzedneLinii().getPunktKoncowy().getX() + UstawieniaRysunku.getOdstepKoszyWPoziomie());
+							punktPoczatkowy.setX(Rysunek.PrzekrojBB[0].Obrys[0].getWspolrzedneLinii().getPunktKoncowy().getX() + UstawieniaRysunku->getOdstepKoszyWPoziomie());
 							
-							kosz = koszZbrojeniowy(UstawieniaKosza, Dane, Dane.getSzerokoscKosza(k));
+							kosz = koszZbrojeniowy(*UstawieniaKosza, Dane, Dane.getSzerokoscKosza(k));
 							
-							Rysunek = RysunekKoszZbrojeniowy(UstawieniaRysunku, punktPoczatkowy);
+							Rysunek = RysunekKoszZbrojeniowy(*UstawieniaRysunku, punktPoczatkowy);
 							cout << "\nGenerujê kosz " << kosz.getSzerokoscKosza();
 							
 							Rysunek.generujRysunekKoszaZbrojeniowego(kosz, Dane);
@@ -154,8 +203,8 @@ int main()
 						Rysunek.rysujKosz(Draw);
 						
 						//okreœla punkt pocz¹tkowy kolejnego kosza w pionie;
-						punktPoczatkowy.setX(UstawieniaRysunku.getPunktPoczatkowyPierwszegoKosza().getX());	
-						punktPoczatkowy.setY(Rysunek.Widok.Obrys[3].getWspolrzedneLinii().getPunktKoncowy().getY() - UstawieniaRysunku.getOdstepKoszyWPionie());
+						punktPoczatkowy.setX(UstawieniaRysunku->getPunktPoczatkowyPierwszegoKosza().getX());	
+						punktPoczatkowy.setY(Rysunek.Widok.Obrys[3].getWspolrzedneLinii().getPunktKoncowy().getY() - UstawieniaRysunku->getOdstepKoszyWPionie());
 						
 						cout << endl;																								
 						//system("PAUSE");

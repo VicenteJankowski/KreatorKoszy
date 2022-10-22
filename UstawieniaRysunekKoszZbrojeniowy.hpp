@@ -143,7 +143,7 @@ class UstawieniaRysunekKoszZbrojeniowy{
 			Punkt OdstepTytuluKoszy;
 	
 			OdstepTytuluKoszy.setX(0.0);
-			OdstepTytuluKoszy.setY(140.0);
+			OdstepTytuluKoszy.setY(170.0);
 			
 			OdstepNapisuWidok.setX(0.0);
 			OdstepNapisuWidok.setY(140.0);

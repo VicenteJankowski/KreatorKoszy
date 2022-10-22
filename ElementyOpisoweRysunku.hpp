@@ -109,17 +109,6 @@ class WymiarNormalny{
 		
 };
 
-class WymiarPromienia : public WymiarNormalny{
-		
-	public:
-		
-		WymiarPromienia(){
-			
-			this->setAligned(4);
-			
-		}
-};
-
 class OpisPret{
 	
 	private:

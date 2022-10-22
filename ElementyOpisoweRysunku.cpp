@@ -333,9 +333,9 @@ void OpisPret::generujOpisDoPreta(PretyGiete DanePrety, Linia liniaPomocnicza, i
 	this->setSrednicaPreta(DanePrety.getSrednica() * 10);
 	
 	if(CzyDlugoscProsta)
-		this->setDlugoscPreta(DanePrety.DlugoscPretaProsta());
+		this->setDlugoscPreta(round(DanePrety.DlugoscPretaProsta()));
 	else
-		this->setDlugoscPreta(DanePrety.DlugoscPreta());
+		this->setDlugoscPreta(round(DanePrety.DlugoscPreta()));
 		
 	this->setStal(DanePrety.getStal());
 	

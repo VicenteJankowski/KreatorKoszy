@@ -212,62 +212,6 @@ float Polilinia::SzerokoscPolilinii(){															//uwaga, jak polilinia ma z
 	
 }
 
-Punkt Polilinia::getSrodekLuku(int i){
-	
-	Punkt punktPomocniczy;
-	Polilinia obroconaPolilinia;
-	
-	float x1, x2, y1, y2;
-	
-	if(this->getLiczbaVertex() == i + 1)
-		throw "B³¹d! Ostatni vertex, nie mo¿na wyznaczyæ po³o¿enia œrodka ³uku.";	
-	
-	x1 = this->getVertex(i).getX();
-	y1 = this->getVertex(i).getY();
-	x2 = this->getVertex(i + 1).getX();
-	y2 = this->getVertex(i + 1).getY();
-	
-	if(x1 == x2){
-		
-		if(y1 == y2)
-			throw "B³¹d! Oba vertexy pokrywaj¹ siê!";		
-		
-		punktPomocniczy.setX(x1 - this->getVertex(i).getTanZaokraglenia() * (punktPomocniczy.OdlegloscMiedzyPunktami(this->getVertex(i), this->getVertex(i + 1)) / 2));	
-		punktPomocniczy.setY((y1 + y2) / 2);
-	}
-	else if(y1 == y2){
-		
-		if(x1 == x2)
-			throw "B³¹d! Oba vertexy pokrywaj¹ siê!";
-		
-		punktPomocniczy.setX((x1 + x2) / 2);
-		punktPomocniczy.setY(y1 - this->getVertex(i).getTanZaokraglenia() * (punktPomocniczy.OdlegloscMiedzyPunktami(this->getVertex(i), this->getVertex(i + 1)) / 2));	
-	}
-	else{
-		
-		float a, b, c; // wspó³czynniki równania kwadratowego
-	
-		a = 1 + ((pow((x2 - x1), 2)) / (pow((y1 - y2), 2)));
-		b = -(x1 + x2) + 2 * ((x2 - x1) / (y1 - y2)) * (y1 - ((y1 - y2) / (x1 - x2)) * x1 - (y1 + y2) / 2);
-		c = (pow((x1 + x2), 2)) / 4 + pow((y1 - ((y1 - y2) / (x1 - x2)) * x1 - (y1 + y2) / 2), 2) - pow(this->getVertex(i).getTanZaokraglenia() * (punktPomocniczy.OdlegloscMiedzyPunktami(this->getVertex(i), this->getVertex(i + 1)) / 2), 2);
-		cout << endl << x1 << ", " << y1 << ", " << x2 << ", " << y2 <<endl;
-		cout << endl << a << ", " << b << ", " << c << endl;
-		float delta;
-		
-		delta = pow(b, 2) - 4 * a * c;
-		
-		if(delta < 0)
-			throw "Delta mniejsza od zera!";
-			
-		punktPomocniczy.setX((-b - sqrt(delta) / 2) / (2 * a));	
-		punktPomocniczy.setY(((x2 - x1) / (y1 - y2)) * punktPomocniczy.getX() + y1 - ((y1 - y2) / (x1 - x2)) * x1);
-		
-	}
-	
-	return punktPomocniczy;	
-	
-}
-
 Polilinia Polilinia::przesunPolilinie(Punkt przesunietyPunktPoczatkowy){
 	
 	Punkt punkt;

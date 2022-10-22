@@ -68,7 +68,6 @@ class Polilinia
 		float DlugoscPolilinii();
 		float WysokoscPolilinii();
 		float SzerokoscPolilinii();
-		Punkt getSrodekLuku(int);
 		
 		Polilinia przesunPolilinie(Punkt);
 		Polilinia odbicieLustrzanePoliliniiOsX(int);

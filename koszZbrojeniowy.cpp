@@ -534,7 +534,7 @@ void koszZbrojeniowy::setPretyGlowne(DaneWejscioweKosz Dane, float Otulina, bool
 	int Sztuki = ceil((this->getSzerokoscKosza() * Dane.PretyGlowne[CzyWykop].getIleNaMetr()) / 100 ) + 1;
 	float OdstepMiedzyPretami = this->dobierzOdstepMiedzyPretami(this->getSzerokoscKosza(), Sztuki);	
 	
-	this->podzielPretyNaDluzyce(this->PretyGlowne[CzyWykop], this->getRzednaWierzchuZbrojenia(), this->getRzednaSpoduZbrojenia(), Dane.PretyGlowne[CzyWykop].getNrPorzadkowy(), Dane.PretyGlowne[CzyWykop].getSrednica(), Otulina, OdstepMiedzyPretami, Dane.PretyGlowne[CzyWykop].getIleNaMetr(), Sztuki, this->UstawieniaKosza.getMinDlugoscZakladu(), this->UstawieniaKosza.getMaxDlugoscPreta(), this->UstawieniaKosza.getMinDlugoscPreta());
+	this->podzielPretyNaDluzyce(this->PretyGlowne[CzyWykop], this->getRzednaWierzchuZbrojenia(), this->getRzednaSpoduZbrojenia(), Dane.PretyGlowne[CzyWykop].getNrPorzadkowy(), Dane.PretyGlowne[CzyWykop].getSrednica(), Otulina, OdstepMiedzyPretami, Dane.PretyGlowne[CzyWykop].getIleNaMetr(), Sztuki, this->UstawieniaKosza.getDlugoscZakladuPret(Dane.PretyGlowne[CzyWykop].getSrednica()), this->UstawieniaKosza.getMaxDlugoscPreta(), this->UstawieniaKosza.getMinDlugoscPreta());
 	
 }
 
@@ -577,7 +577,7 @@ bool koszZbrojeniowy::setDozbrojeniaPoziomI(float RzednaWierzchu, float RzednaSp
 			}
 			
 			
-			this->podzielPretyNaDluzyce(this->DozbrojeniaOdStronyGruntuI, RzednaWierzchu, RzednaSpodu, "11", Srednica, Otulina, OdstepMiedzyPretami, IleNaMetr, Sztuki, this->UstawieniaKosza.getMinDlugoscZakladu(), this->UstawieniaKosza.getMaxDlugoscPreta(), this->UstawieniaKosza.getMinDlugoscPreta());			
+			this->podzielPretyNaDluzyce(this->DozbrojeniaOdStronyGruntuI, RzednaWierzchu, RzednaSpodu, "11", Srednica, Otulina, OdstepMiedzyPretami, IleNaMetr, Sztuki, this->UstawieniaKosza.getDlugoscZakladuPret(Srednica), this->UstawieniaKosza.getMaxDlugoscPreta(), this->UstawieniaKosza.getMinDlugoscPreta());			
 		
 		}
 		else if (strona == "wykop"){
@@ -596,7 +596,7 @@ bool koszZbrojeniowy::setDozbrojeniaPoziomI(float RzednaWierzchu, float RzednaSp
 			}
 			
 			
-			this->podzielPretyNaDluzyce(this->DozbrojeniaOdStronyWykopuI, RzednaWierzchu, RzednaSpodu, "2", Srednica, Otulina, OdstepMiedzyPretami, IleNaMetr, Sztuki, this->UstawieniaKosza.getMinDlugoscZakladu(), this->UstawieniaKosza.getMaxDlugoscPreta(), this->UstawieniaKosza.getMinDlugoscPreta());
+			this->podzielPretyNaDluzyce(this->DozbrojeniaOdStronyWykopuI, RzednaWierzchu, RzednaSpodu, "2", Srednica, Otulina, OdstepMiedzyPretami, IleNaMetr, Sztuki, this->UstawieniaKosza.getDlugoscZakladuPret(Srednica), this->UstawieniaKosza.getMaxDlugoscPreta(), this->UstawieniaKosza.getMinDlugoscPreta());
 			
 		}
 		else		
@@ -661,7 +661,7 @@ bool koszZbrojeniowy::setDozbrojeniaPoziomII(float RzednaWierzchu, float RzednaS
 				
 			}
 			
-			this->podzielPretyNaDluzyce(this->DozbrojeniaOdStronyGruntuII, RzednaWierzchu, RzednaSpodu, "12", Srednica, Otulina, OdstepMiedzyPretami, IleNaMetr, Sztuki, this->UstawieniaKosza.getMinDlugoscZakladu(), this->UstawieniaKosza.getMaxDlugoscPreta(), this->UstawieniaKosza.getMinDlugoscPreta());
+			this->podzielPretyNaDluzyce(this->DozbrojeniaOdStronyGruntuII, RzednaWierzchu, RzednaSpodu, "12", Srednica, Otulina, OdstepMiedzyPretami, IleNaMetr, Sztuki, this->UstawieniaKosza.getDlugoscZakladuPret(Srednica), this->UstawieniaKosza.getMaxDlugoscPreta(), this->UstawieniaKosza.getMinDlugoscPreta());
 			
 		}
 		else if (strona == "wykop"){
@@ -691,7 +691,7 @@ bool koszZbrojeniowy::setDozbrojeniaPoziomII(float RzednaWierzchu, float RzednaS
 				
 			}
 			
-			this->podzielPretyNaDluzyce(this->DozbrojeniaOdStronyWykopuII, RzednaWierzchu, RzednaSpodu, "3", Srednica, Otulina, OdstepMiedzyPretami, IleNaMetr, Sztuki, this->UstawieniaKosza.getMinDlugoscZakladu(), this->UstawieniaKosza.getMaxDlugoscPreta(), this->UstawieniaKosza.getMinDlugoscPreta());
+			this->podzielPretyNaDluzyce(this->DozbrojeniaOdStronyWykopuII, RzednaWierzchu, RzednaSpodu, "3", Srednica, Otulina, OdstepMiedzyPretami, IleNaMetr, Sztuki, this->UstawieniaKosza.getDlugoscZakladuPret(Srednica), this->UstawieniaKosza.getMaxDlugoscPreta(), this->UstawieniaKosza.getMinDlugoscPreta());
 			
 		}
 		else	
@@ -885,33 +885,29 @@ bool koszZbrojeniowy::generujGeometrieStrzemionaDuze(){
 	
 	
 	//wyliczenie sztuki strzemion
-	int i=0;
-	int ostatnieStrzemieJakBliskoKoncaZbrojenia = 10;
-	
-	float PPy = + 10;
+	float AktualnaPozycja = 0;
+	int AktualnyPozycjaUkladuStrzemion = 0, LiczbaStrzemion = 0, Powtorzenia = 0;
 
-	i++;
-	
-	PPy = PPy + 15;
-	
-	i++;
-	
-	PPy = PPy + 15;
-	
-	i++;
-	
-	//rysuje kolejne strzemiona zgodnie z odstêpem
-	PPy = PPy + this->StrzemionaDuze.getOdstepMiedzyPretami();
-
-	while(PPy  <= this->WysokoscKosza() - ostatnieStrzemieJakBliskoKoncaZbrojenia){	//sprawdza czy strzemiê nie wypada poni¿ej kosza zbrojeniowego
-	
-		i++;
+	while(AktualnaPozycja < this->getRzednaWierzchuSciany() - this->getRzednaSpoduZbrojenia() - this->UstawieniaKosza.getMinOdlegloscStrzemieniaOdKoncaKosza()){
 		
-		PPy = PPy + this->StrzemionaDuze.getOdstepMiedzyPretami();
+		while(Powtorzenia < this->UstawieniaKosza.getUkladStrzemion(AktualnyPozycjaUkladuStrzemion, 1)){
+			
+			AktualnaPozycja += this->UstawieniaKosza.getUkladStrzemion(AktualnyPozycjaUkladuStrzemion, 0);
+			LiczbaStrzemion++;
+			Powtorzenia++;
+			
+			if(AktualnaPozycja >= this->WysokoscKosza() - this->UstawieniaKosza.getMinOdlegloscStrzemieniaOdKoncaKosza())
+				break;
+		}	
+		
+		Powtorzenia = 0;
+		if(AktualnyPozycjaUkladuStrzemion < this->UstawieniaKosza.getIlePozycjiUkladStrzemion() - 1)
+			AktualnyPozycjaUkladuStrzemion++;
+			
 	}
 	
-	this->StrzemionaDuze.setSztuki(2 * (i - 2));
-
+	this->StrzemionaDuze.setSztuki(2 * (LiczbaStrzemion - 1));
+	
 	return 1;
 }
 

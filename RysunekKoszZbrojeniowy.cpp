@@ -614,49 +614,36 @@ void Widok::generujPretyGlowne(koszZbrojeniowy kosz){
 void Widok::generujStrzemiona(koszZbrojeniowy kosz){
 	
 	int i=0;
-	int ostatnieStrzemieJakBliskoKoncaZbrojenia = 10;
+	int ostatnieStrzemieJakBliskoKoncaZbrojenia = kosz.UstawieniaKosza.getMinOdlegloscStrzemieniaOdKoncaKosza();
 	Linia linia;
+		
+	int NumerPozycji = 0;
+	int KtorePowtorzenie = 0;
 	
-	//wyliczenie pierwszego strzemienia
 	float PPx = this->getPunktPoczatkowy().getX();
-	float PPy = this->getPunktPoczatkowy().getY() - 10;
+	float PPy = this->getPunktPoczatkowy().getY() - kosz.UstawieniaKosza.getUkladStrzemion(NumerPozycji, 0);
 	float PKx = PPx + kosz.getSzerokoscKosza();
 	float PKy = PPy;
 	
-	this->Strzemiona[i].setWspolrzedneLinii(
-		linia.stworzLinieZeWspolrzednych(PPx, PPy, PKx, PKy));
-	this->Strzemiona[i++].setNazwaWarstwy(zbrojenie);
-	
-	//rysuje dwa kolejne strzemiona o 15cm ni¿ej i potem ju¿ normalnie	
-	PPy = PPy - 15;
-	PKy = PPy;
-	
-	this->Strzemiona[i].setWspolrzedneLinii(
-		linia.stworzLinieZeWspolrzednych(PPx, PPy, PKx, PKy));
-	this->Strzemiona[i++].setNazwaWarstwy(zbrojenie);
-	
-	PPy = PPy - 15;
-	PKy = PPy;
-	
-	this->Strzemiona[i].setWspolrzedneLinii(
-		linia.stworzLinieZeWspolrzednych(PPx, PPy, PKx, PKy));
-	this->Strzemiona[i++].setNazwaWarstwy(zbrojenie);
-	
-	//rysuje kolejne strzemiona zgodnie z odstêpem
-	PPy = PPy - kosz.StrzemionaDuze.getOdstepMiedzyPretami();
-	PKy = PPy;
-	
-	while(PPy - (this->getPunktPoczatkowy().getY() - (kosz.getRzednaWierzchuSciany() - kosz.getRzednaWierzchuZbrojenia()) - kosz.WysokoscKosza()) >= ostatnieStrzemieJakBliskoKoncaZbrojenia){	//sprawdza czy strzemiê nie wypada poni¿ej kosza zbrojeniowego
-	
-	this->Strzemiona[i].setWspolrzedneLinii(
-		linia.stworzLinieZeWspolrzednych(PPx, PPy, PKx, PKy));
-	this->Strzemiona[i++].setNazwaWarstwy(zbrojenie);
-	
-	PPy = PPy - kosz.StrzemionaDuze.getOdstepMiedzyPretami();
-	PKy = PPy;
-	
+	while((PPy - (this->getPunktPoczatkowy().getY() - (kosz.getRzednaWierzchuSciany() - kosz.getRzednaWierzchuZbrojenia()) - kosz.WysokoscKosza())) >= ostatnieStrzemieJakBliskoKoncaZbrojenia){	//sprawdza czy strzemiê nie wypada poni¿ej kosza zbrojeniowego
+				
+		this->Strzemiona[i].setWspolrzedneLinii(
+			linia.stworzLinieZeWspolrzednych(PPx, PPy, PKx, PKy));
+		this->Strzemiona[i++].setNazwaWarstwy(zbrojenie);
+		
+		KtorePowtorzenie++;	
+		if(!(KtorePowtorzenie < kosz.UstawieniaKosza.getUkladStrzemion(NumerPozycji, 1))){
+			
+			if(NumerPozycji < (kosz.UstawieniaKosza.getIlePozycjiUkladStrzemion() - 1))				//sprawdza czy mamy jeszcze pozycje do u¿ycia; jeœli zosta³a tylko jedna, to przeskakuje do niej i za kolejnym razem nie zwiêkszy NumeruPozycji, czyli bêdzie korzysta³ przy dalszych strzemionach z ostatniej dostêpnej pozycji
+				NumerPozycji++;
+			KtorePowtorzenie = 0;
+			
+		}
+		
+		PPy = PPy - kosz.UstawieniaKosza.getUkladStrzemion(NumerPozycji, 0);
+		PKy = PPy;
+		
 	}
-
 }
 
 Punkt Widok::punktPoczatkowyPretowNr6(koszZbrojeniowy kosz){
@@ -740,8 +727,8 @@ void Widok::generujOpisyPretow(UstawieniaRysunekKoszZbrojeniowy UstawieniaRysunk
 	
 	int i = 0, j = -1, k = 0 , l = 0, m = 0;
 	float x, yp, yk, y0, rzednaOpisu;
-	float rzedneYNarysowane[50];
-	Punkt wspolrzedneZaczepienia[50];
+	float rzedneYNarysowane[20];
+	Punkt wspolrzedneZaczepienia[20];
 	Linia liniaPomocnicza;
 	
 	x = this->getPunktPoczatkowy().getX() + kosz.getSzerokoscKosza() + UstawieniaRysunku.getOdstepBocznyOpisowPretowGlownych();
@@ -954,7 +941,7 @@ void Widok::generujOpisyDoUszu(UstawieniaRysunekKoszZbrojeniowy UstawieniaRysunk
 void Widok::generujWymiaryNormalne(UstawieniaRysunekKoszZbrojeniowy UstawieniaRysunku, koszZbrojeniowy kosz){
 	
 	int i=0;
-	int WspolrzednaLiniiWymiarowej;
+	int WspolrzednaLiniiWymiarowej, PrzesuniecieWymiaru = 0;
 	float ZaokraglonyWymiar;
 	float xp, yp, xk, yk;
 	
@@ -1044,12 +1031,18 @@ void Widok::generujWymiaryNormalne(UstawieniaRysunekKoszZbrojeniowy UstawieniaRy
 	
 	WspolrzednaLiniiWymiarowej = xk - UstawieniaRysunku.getOdstepWymiarowPoziomychPierwszejLinii();
 	
-	this->WymiaryNormalne[i++].generujPojedynczyWymiarNormalny(xp, yp, xk, yk, WspolrzednaLiniiWymiarowej, UstawieniaRysunku.getIleTekstWymiaruNadLinia(),	alfa);	
+	//sprawdza czy tekst wymiaru zmieœci siê w wymiarze; logarytm pozwala sprawdziæ iloœc cyfr w liczbie
+	PrzesuniecieWymiaru = 0;
+	if((yp - yk) < (((int)log10(yp - yk) + 1) * 10)) 
+		PrzesuniecieWymiaru = (yp - yk) / 2 + 2;
+	
+	this->WymiaryNormalne[i++].generujPojedynczyWymiarNormalny(xp, yp, xk, yk, WspolrzednaLiniiWymiarowej, UstawieniaRysunku.getIleTekstWymiaruNadLinia(),	alfa, 1, PrzesuniecieWymiaru);
+	PrzesuniecieWymiaru = 0; // czyœci zmienn¹;	
 	
 	//kolejny wymiar
 	
 	xp = xk;		//kontynuuje poprzedni wymiar
-	yp = yk;
+	yp = min(yp, yk); //czasami zbrojenie mo¿e byæ poni¿ej obrysu i wtedy musi odwrotnie punkty przepisaæ, ¿eby kontynuowaæ dobrze wymiar
 	xk = this->Strzemiona[0].getWspolrzedneLinii().getPunktPoczatkowy().getX();
 	yk = this->Strzemiona[0].getWspolrzedneLinii().getPunktPoczatkowy().getY(); 
 	
@@ -1059,34 +1052,209 @@ void Widok::generujWymiaryNormalne(UstawieniaRysunekKoszZbrojeniowy UstawieniaRy
 	//tutaj rozwi¹zanie przysz³oœciowe - dzieli strzemiona na odcinki o równy rozstawach i na tej podstawie rysuje wymiary
 	
 	j = 0;
-	int OdlegloscStrzemion, PrzesuniecieWymiaru;
-	int PoprzedniNumerZmianyRozstawuStrzemion = 0;
+	int k = 0;
+	bool CzyZostalPoprzedniWymiarDoRozrysowania[3] = {false, false, false}, RysujPoprzedniWymiar = false;
+	int PoprzedniePrzesuniecieWymiaru = 0;
+	ostringstream PoprzedniTekstZamiastWymiaru;
+	int IlePowtorzen, PoprzednieIlePowtorzen, OdlegloscStrzemion, PoprzedniaOdlegloscStrzemion, DlugoscTekstuWymiaruDlugi, PoprzedniaDlugoscTekstuWymiaruDlugi, DlugoscTekstuWymiaruKrotki, PoprzedniaDlugoscTekstuWymiaruKrotki;
+	float temp_yp, temp_yk, poprzednie_yp, poprzednie_yk;
 		
-	while(this->Strzemiona[j].getNazwaWarstwy() != brak){
+	while(this->Strzemiona[j + 1].getNazwaWarstwy() != brak){
 		
 		OdlegloscStrzemion = this->Strzemiona[j].getWspolrzedneLinii().getPunktPoczatkowy().getY() - this->Strzemiona[j + 1].getWspolrzedneLinii().getPunktPoczatkowy().getY();
 	
-		while(this->Strzemiona[j].getWspolrzedneLinii().getPunktPoczatkowy().getY() - this->Strzemiona[(j++) + 1].getWspolrzedneLinii().getPunktPoczatkowy().getY() == OdlegloscStrzemion)	;
+		IlePowtorzen = 1;
+		while(this->Strzemiona[j + IlePowtorzen].getWspolrzedneLinii().getPunktPoczatkowy().getY() - this->Strzemiona[j + 1 + IlePowtorzen].getWspolrzedneLinii().getPunktPoczatkowy().getY() == OdlegloscStrzemion)	
+			IlePowtorzen++;
 		
 		xp = xk;		//kontynuuje poprzedni wymiar
 		yp = yk;
-		xk = this->Strzemiona[j - 1].getWspolrzedneLinii().getPunktPoczatkowy().getX();
-		yk = this->Strzemiona[j - 1].getWspolrzedneLinii().getPunktPoczatkowy().getY();
+		xk = this->Strzemiona[j + IlePowtorzen].getWspolrzedneLinii().getPunktPoczatkowy().getX();
+		yk = this->Strzemiona[j + IlePowtorzen].getWspolrzedneLinii().getPunktPoczatkowy().getY();
 		
 		//czyszczenie zmiennej przechowuj¹cej tekst
 		TekstZamiastWymiaru.str("");
 		TekstZamiastWymiaru.clear();	 
 		
-		//tworzy tekst wymiaru LiczbaPretow x OdlegloscMiedzyPretami = DlugoscOdcinka
-		TekstZamiastWymiaru << j - PoprzedniNumerZmianyRozstawuStrzemion - 1 << "x" << OdlegloscStrzemion << "=" << (j - PoprzedniNumerZmianyRozstawuStrzemion - 1) * OdlegloscStrzemion;
+		//oblicza przybli¿on¹ d³ugoœæ tekstu wymiaru
+		TekstZamiastWymiaru << IlePowtorzen << "x" << OdlegloscStrzemion << "=" << IlePowtorzen * OdlegloscStrzemion;
+		DlugoscTekstuWymiaruDlugi = TekstZamiastWymiaru.str().length() * 10 - 5;
 		
-		//przesuwa wymiar jeœli jest za krótki i nie mieœci siê w liniach pomocniczych
-		PrzesuniecieWymiaru = 0;
-		if(yp - yk < 40)	PrzesuniecieWymiaru = -(yp - yk) - 20;
+		TekstZamiastWymiaru.str("");
+		TekstZamiastWymiaru.clear();
+		
+		//oblicza przybli¿on¹ d³ugoœæ tekstu wymiaru
+		TekstZamiastWymiaru << IlePowtorzen << "x" << OdlegloscStrzemion;
+		DlugoscTekstuWymiaruKrotki = TekstZamiastWymiaru.str().length() * 10 - 5;
+		
+		TekstZamiastWymiaru.str("");
+		TekstZamiastWymiaru.clear();
+		
+		//sprawdza czy wymiar w formie AxB=C bêdzie siê mieœci³ w liniach pomocniczych - jak nie to próbuje AxB, a na koniec jak trzeba to rozbija na pojedyncze wymiary
+		if(IlePowtorzen > 1 && (yp - yk) >= DlugoscTekstuWymiaruDlugi){
 			
-		this->WymiaryNormalne[i++].generujPojedynczyWymiarNormalny(xp, yp, xk, yk, WspolrzednaLiniiWymiarowej, UstawieniaRysunku.getIleTekstWymiaruNadLinia(),	alfa, 1, PrzesuniecieWymiaru, TekstZamiastWymiaru.str());
+			//tworzy tekst wymiaru LiczbaPretow x OdlegloscMiedzyPretami = DlugoscOdcinka
+			TekstZamiastWymiaru << IlePowtorzen << "x" << OdlegloscStrzemion << "=" << IlePowtorzen * OdlegloscStrzemion;			
+		}
+		else if(IlePowtorzen > 1 && (yp - yk) >= DlugoscTekstuWymiaruKrotki){				//dopuszcza mo¿liwoœæ skrócenia opisu do AxB
+			//tworzy tekst wymiaru LiczbaPretow x OdlegloscMiedzyPretami = DlugoscOdcinka
+			TekstZamiastWymiaru << IlePowtorzen << "x" << OdlegloscStrzemion;
+		}
+		else if(
+				this->WymiaryNormalne[i - 1].getTekstZamiastWymiaru().length() == 0
+				&& IlePowtorzen > 1 
+				&& (this->WymiaryNormalne[i - 1].getPunktStartowy().getY() - this->WymiaryNormalne[i - 1].getPunktKoncowy().getY()) / 2 >= DlugoscTekstuWymiaruDlugi + ((int)log10(this->WymiaryNormalne[i - 1].getPunktStartowy().getY() - this->WymiaryNormalne[i - 1].getPunktKoncowy().getY()) + 1) * 10 + 5){
+			
+					PrzesuniecieWymiaru = (yp - yk) / 2 + 2;
+					TekstZamiastWymiaru << IlePowtorzen << "x" << OdlegloscStrzemion << "=" << IlePowtorzen * OdlegloscStrzemion;
+		}
+		else if(
+				this->WymiaryNormalne[i - 1].getTekstZamiastWymiaru().length() == 0 
+				&& IlePowtorzen > 1 
+				&& (this->WymiaryNormalne[i - 1].getPunktStartowy().getY() - this->WymiaryNormalne[i - 1].getPunktKoncowy().getY())  / 2>= DlugoscTekstuWymiaruKrotki + ((int)log10(this->WymiaryNormalne[i - 1].getPunktStartowy().getY() - this->WymiaryNormalne[i - 1].getPunktKoncowy().getY()) + 1) * 10 + 5){
+			
+					PrzesuniecieWymiaru = (yp - yk) / 2 + 2;
+					TekstZamiastWymiaru << IlePowtorzen << "x" << OdlegloscStrzemion;
+		}
+		else if(
+				this->WymiaryNormalne[i - 1].getTekstZamiastWymiaru().length() > 0
+				&& IlePowtorzen > 1 
+				&& (this->WymiaryNormalne[i - 1].getPunktStartowy().getY() - this->WymiaryNormalne[i - 1].getPunktKoncowy().getY()) / 2 >= DlugoscTekstuWymiaruDlugi + this->WymiaryNormalne[i - 1].getTekstZamiastWymiaru().length() * 10 + 5){
+			
+					PrzesuniecieWymiaru = (yp - yk) / 2 + 2;
+					TekstZamiastWymiaru << IlePowtorzen << "x" << OdlegloscStrzemion << "=" << IlePowtorzen * OdlegloscStrzemion;
+		}
+		else if(
+				this->WymiaryNormalne[i - 1].getTekstZamiastWymiaru().length() > 0 
+				&& IlePowtorzen > 1 
+				&& (this->WymiaryNormalne[i - 1].getPunktStartowy().getY() - this->WymiaryNormalne[i - 1].getPunktKoncowy().getY())  / 2>= DlugoscTekstuWymiaruKrotki + this->WymiaryNormalne[i - 1].getTekstZamiastWymiaru().length() * 10 + 5){
+			
+					PrzesuniecieWymiaru = (yp - yk) / 2 + 2;
+					TekstZamiastWymiaru << IlePowtorzen << "x" << OdlegloscStrzemion;
+		}
+		else if(IlePowtorzen == 1){
+			// po prostu opuœciæ ten blok
+		}
+		else if(this->Strzemiona[j + 1 + IlePowtorzen].getNazwaWarstwy() == brak){
+			
+			temp_yp = yp;
+			temp_yk = temp_yp - OdlegloscStrzemion;
+			
+			while(temp_yk >= yk){
+				
+				this->WymiaryNormalne[i++].generujPojedynczyWymiarNormalny(xp, temp_yp, xk, temp_yk, WspolrzednaLiniiWymiarowej, UstawieniaRysunku.getIleTekstWymiaruNadLinia(), alfa, 1);
+				
+				temp_yp = temp_yk;
+				temp_yk = temp_yp - OdlegloscStrzemion;
+			
+			}
+		}
+		else{			// jeœli nie uda³o siê narysowaæ d³ugiego wymiaru, zapisuje go w pamiêci, ¿eby sprawdziæ w kolejnym kroku pêtli jaki wymiar bêdzie poni¿ej; jak bêdzie du¿y, to zmieœci siê wymiar z przesuniêciem
+			poprzednie_yp = yp;
+			poprzednie_yk = yk;
+			PoprzedniaOdlegloscStrzemion = OdlegloscStrzemion;
+			PoprzednieIlePowtorzen = IlePowtorzen;
+			PoprzedniaDlugoscTekstuWymiaruDlugi = DlugoscTekstuWymiaruDlugi;
+			PoprzedniaDlugoscTekstuWymiaruKrotki = DlugoscTekstuWymiaruKrotki;
+			
+			for(k = 0; CzyZostalPoprzedniWymiarDoRozrysowania[k]; k++) ; //przeskakuje do ostatniej wartoœci true
+			
+			CzyZostalPoprzedniWymiarDoRozrysowania[k] = true;			
+		}
 		
-		PoprzedniNumerZmianyRozstawuStrzemion = j - 1;	
+		
+		if(RysujPoprzedniWymiar && !CzyZostalPoprzedniWymiarDoRozrysowania[1]){	//zaczyna od rozrysowania poprzedniego wymiaru je¿eli w poprzedniej kolejce nie uda³o siê - sprawdza czy da siê przesun¹æ w kierunku ni¿szego wymiaru
+		
+			if(
+				TekstZamiastWymiaru.str().length() > 0
+				&& (yp - yk) / 2 >= PoprzedniaDlugoscTekstuWymiaruDlugi + TekstZamiastWymiaru.str().length() * 10 + 5){ 
+				
+				PoprzedniePrzesuniecieWymiaru = -((poprzednie_yp - poprzednie_yk) / 2 + 2);
+				PoprzedniTekstZamiastWymiaru << PoprzednieIlePowtorzen << "x" << PoprzedniaOdlegloscStrzemion << "=" << PoprzednieIlePowtorzen * PoprzedniaOdlegloscStrzemion;
+				
+				this->WymiaryNormalne[i++].generujPojedynczyWymiarNormalny(xp, poprzednie_yp, xk, poprzednie_yk, WspolrzednaLiniiWymiarowej, UstawieniaRysunku.getIleTekstWymiaruNadLinia(), alfa, 1, PoprzedniePrzesuniecieWymiaru, PoprzedniTekstZamiastWymiaru.str());			
+			}
+			else if(
+				TekstZamiastWymiaru.str().length() > 0
+				&& (yp - yk) / 2 >= PoprzedniaDlugoscTekstuWymiaruKrotki + TekstZamiastWymiaru.str().length() * 10 + 5){ 
+				
+				PoprzedniePrzesuniecieWymiaru = -((poprzednie_yp - poprzednie_yk) / 2 + 2);
+				PoprzedniTekstZamiastWymiaru << PoprzednieIlePowtorzen << "x" << PoprzedniaOdlegloscStrzemion;
+				
+				this->WymiaryNormalne[i++].generujPojedynczyWymiarNormalny(xp, poprzednie_yp, xk, poprzednie_yk, WspolrzednaLiniiWymiarowej, UstawieniaRysunku.getIleTekstWymiaruNadLinia(), alfa, 1, PoprzedniePrzesuniecieWymiaru, PoprzedniTekstZamiastWymiaru.str());			
+			}
+			else if(
+				TekstZamiastWymiaru.str().length() == 0
+				&& (yp - yk) / 2 >= PoprzedniaDlugoscTekstuWymiaruDlugi + ((int)log10(yp - yk) + 1) * 10 + 5){ 
+				
+				PoprzedniePrzesuniecieWymiaru = -((poprzednie_yp - poprzednie_yk) / 2 + 2);
+				PoprzedniTekstZamiastWymiaru << PoprzednieIlePowtorzen << "x" << PoprzedniaOdlegloscStrzemion << "=" << PoprzednieIlePowtorzen * PoprzedniaOdlegloscStrzemion;
+				
+				this->WymiaryNormalne[i++].generujPojedynczyWymiarNormalny(xp, poprzednie_yp, xk, poprzednie_yk, WspolrzednaLiniiWymiarowej, UstawieniaRysunku.getIleTekstWymiaruNadLinia(), alfa, 1, PoprzedniePrzesuniecieWymiaru, PoprzedniTekstZamiastWymiaru.str());			
+			}
+			else if(
+				TekstZamiastWymiaru.str().length() == 0
+				&& (yp - yk) / 2 >= PoprzedniaDlugoscTekstuWymiaruKrotki + ((int)log10(yp - yk) + 1) * 10 + 5){ 
+				
+				PoprzedniePrzesuniecieWymiaru = -((poprzednie_yp - poprzednie_yk) / 2 + 2);
+				PoprzedniTekstZamiastWymiaru << PoprzednieIlePowtorzen << "x" << PoprzedniaOdlegloscStrzemion;
+				
+				this->WymiaryNormalne[i++].generujPojedynczyWymiarNormalny(xp, poprzednie_yp, xk, poprzednie_yk, WspolrzednaLiniiWymiarowej, UstawieniaRysunku.getIleTekstWymiaruNadLinia(), alfa, 1, PoprzedniePrzesuniecieWymiaru, PoprzedniTekstZamiastWymiaru.str());			
+			}
+			else{
+				temp_yp = poprzednie_yp;
+				temp_yk = temp_yp - PoprzedniaOdlegloscStrzemion;
+				
+				while(temp_yk >= poprzednie_yk){
+					
+					this->WymiaryNormalne[i++].generujPojedynczyWymiarNormalny(xp, temp_yp, xk, temp_yk, WspolrzednaLiniiWymiarowej, UstawieniaRysunku.getIleTekstWymiaruNadLinia(), alfa, 1);
+					
+					temp_yp = temp_yk;
+					temp_yk = temp_yp - PoprzedniaOdlegloscStrzemion;
+				}
+			}
+			
+			this->WymiaryNormalne[i++].generujPojedynczyWymiarNormalny(xp, yp, xk, yk, WspolrzednaLiniiWymiarowej, UstawieniaRysunku.getIleTekstWymiaruNadLinia(), alfa, 1, PrzesuniecieWymiaru, TekstZamiastWymiaru.str());
+			
+			for(k = 0; CzyZostalPoprzedniWymiarDoRozrysowania[k]; k++)		//czyœci wszystkie zmienne
+				CzyZostalPoprzedniWymiarDoRozrysowania[k] = false;
+			RysujPoprzedniWymiar = false;
+		}
+		else if(RysujPoprzedniWymiar){
+			
+			temp_yp = poprzednie_yp;
+			temp_yk = temp_yp - PoprzedniaOdlegloscStrzemion;
+			
+			while(temp_yk >= poprzednie_yk){
+				
+				this->WymiaryNormalne[i++].generujPojedynczyWymiarNormalny(xp, temp_yp, xk, temp_yk, WspolrzednaLiniiWymiarowej, UstawieniaRysunku.getIleTekstWymiaruNadLinia(), alfa, 1);
+				
+				temp_yp = temp_yk;
+				temp_yk = temp_yp - PoprzedniaOdlegloscStrzemion;
+			}
+			
+			temp_yp = yp;
+			temp_yk = temp_yp - OdlegloscStrzemion;
+			
+			while(temp_yk >= yk){
+				
+				this->WymiaryNormalne[i++].generujPojedynczyWymiarNormalny(xp, temp_yp, xk, temp_yk, WspolrzednaLiniiWymiarowej, UstawieniaRysunku.getIleTekstWymiaruNadLinia(), alfa, 1);
+				
+				temp_yp = temp_yk;
+				temp_yk = temp_yp - OdlegloscStrzemion;
+			}
+		}
+		else if(!CzyZostalPoprzedniWymiarDoRozrysowania[0]){
+			this->WymiaryNormalne[i++].generujPojedynczyWymiarNormalny(xp, yp, xk, yk, WspolrzednaLiniiWymiarowej, UstawieniaRysunku.getIleTekstWymiaruNadLinia(), alfa, 1, PrzesuniecieWymiaru, TekstZamiastWymiaru.str());
+		}
+		
+		if(CzyZostalPoprzedniWymiarDoRozrysowania[0]) //w nastêpnej kolejce musi zostaæ rozrysowany poprzedni wymiar
+			RysujPoprzedniWymiar = true;
+		
+		PrzesuniecieWymiaru = 0; // czyœci zmienn¹;
+		
+		//przeskakuje pozycje jeœli z³¹czy³ wymiary
+		j += IlePowtorzen;
 	}
 	//kolejny wymiar
 	
@@ -1153,7 +1321,8 @@ void PrzekrojAA::generujPretyGlowne(koszZbrojeniowy kosz){
 void PrzekrojAA::generujStrzemiona(koszZbrojeniowy kosz){
 
 	int i=0, j=0;
-	int ostatnieStrzemieJakBliskoKoncaZbrojenia = 10;
+	int ostatnieStrzemieJakBliskoKoncaZbrojenia = kosz.UstawieniaKosza.getMinOdlegloscStrzemieniaOdKoncaKosza();
+	
 	Punkt przesuniecieStrzemionMalych, przesuniecieStrzemionDuzych;
 	
 	przesuniecieStrzemionDuzych.setX(-4.5);
@@ -1164,89 +1333,45 @@ void PrzekrojAA::generujStrzemiona(koszZbrojeniowy kosz){
 	
 	Linia linia;
 	Circle circle;
-	
-	
+		
+	int NumerPozycji = 0;
+	int KtorePowtorzenie = 0;
+		
 	//wyliczenie pierwszego strzemienia
 	float PPx = this->getPunktPoczatkowy().getX() + kosz.StrzemionaDuze.getOtulina() + przesuniecieStrzemionDuzych.getX();
-	float PPy = this->getPunktPoczatkowy().getY() - 10;
+	float PPy = this->getPunktPoczatkowy().getY() - kosz.UstawieniaKosza.getUkladStrzemion(NumerPozycji, 0);
 	float PKx = this->getPunktPoczatkowy().getX() + kosz.getSzerokoscSciany() - kosz.StrzemionaDuze.getOtulina() - przesuniecieStrzemionDuzych.getX();
 	float PKy = PPy;
 	
-	this->StrzemionaDuze[i].setWspolrzedneLinii(
-		linia.stworzLinieZeWspolrzednych(PPx, PPy, PKx, PKy));
-	this->StrzemionaDuze[i++].setNazwaWarstwy(zbrojenie);
 	
-	//rysuje strzemiona ma³e
-	this->StrzemionaMale[j].setDaneKola(
-		circle.utworzKolo(PPx + przesuniecieStrzemionMalych.getX(), PPy + przesuniecieStrzemionMalych.getY(), 2 * kosz.StrzemionaMale[0].getSrednica() / 2));
-	this->StrzemionaMale[j++].setNazwaWarstwy(zbrojenie);
-	
-	this->StrzemionaMale[j].setDaneKola(
-		circle.utworzKolo(PKx - przesuniecieStrzemionMalych.getX(), PPy + przesuniecieStrzemionMalych.getY(), 2 * kosz.StrzemionaMale[0].getSrednica() / 2));
-	this->StrzemionaMale[j++].setNazwaWarstwy(zbrojenie);
-	
-	
-	
-	//rysuje dwa kolejne strzemiona o 15cm ni¿ej i potem ju¿ normalnie	
-	PPy = PPy - 15;
-	PKy = PPy;
-	
-	this->StrzemionaDuze[i].setWspolrzedneLinii(
-		linia.stworzLinieZeWspolrzednych(PPx, PPy, PKx, PKy));
-	this->StrzemionaDuze[i++].setNazwaWarstwy(zbrojenie);
-	
-	//rysuje strzemiona ma³e
-	this->StrzemionaMale[j].setDaneKola(
-		circle.utworzKolo(PPx + przesuniecieStrzemionMalych.getX(), PPy + przesuniecieStrzemionMalych.getY(), 2 * kosz.StrzemionaMale[0].getSrednica() / 2));
-	this->StrzemionaMale[j++].setNazwaWarstwy(zbrojenie);
-	
-	this->StrzemionaMale[j].setDaneKola(
-		circle.utworzKolo(PKx - przesuniecieStrzemionMalych.getX(), PPy + przesuniecieStrzemionMalych.getY(), 2 * kosz.StrzemionaMale[0].getSrednica() / 2));
-	this->StrzemionaMale[j++].setNazwaWarstwy(zbrojenie);
-	
-	
-	PPy = PPy - 15;
-	PKy = PPy;
-	
-	this->StrzemionaDuze[i].setWspolrzedneLinii(
-		linia.stworzLinieZeWspolrzednych(PPx, PPy, PKx, PKy));
-	this->StrzemionaDuze[i++].setNazwaWarstwy(zbrojenie);
-	
-		//rysuje strzemiona ma³e
-	this->StrzemionaMale[j].setDaneKola(
-		circle.utworzKolo(PPx + przesuniecieStrzemionMalych.getX(), PPy + przesuniecieStrzemionMalych.getY(), 2 * kosz.StrzemionaMale[0].getSrednica() / 2));
-	this->StrzemionaMale[j++].setNazwaWarstwy(zbrojenie);
-	
-	this->StrzemionaMale[j].setDaneKola(
-		circle.utworzKolo(PKx - przesuniecieStrzemionMalych.getX(), PPy + przesuniecieStrzemionMalych.getY(), 2 * kosz.StrzemionaMale[0].getSrednica() / 2));
-	this->StrzemionaMale[j++].setNazwaWarstwy(zbrojenie);
-	
-	
-	
-	//rysuje kolejne strzemiona zgodnie z odstêpem		
-	PPy = PPy - kosz.StrzemionaDuze.getOdstepMiedzyPretami();
-	PKy = PPy;
-	
-	while(PPy - (this->getPunktPoczatkowy().getY() - (kosz.getRzednaWierzchuSciany() - kosz.getRzednaWierzchuZbrojenia()) - kosz.WysokoscKosza()) >= ostatnieStrzemieJakBliskoKoncaZbrojenia){	//sprawdza czy strzemiê nie wypada poni¿ej kosza zbrojeniowego
-	
+	while((PPy - (this->getPunktPoczatkowy().getY() - (kosz.getRzednaWierzchuSciany() - kosz.getRzednaWierzchuZbrojenia()) - kosz.WysokoscKosza())) >= ostatnieStrzemieJakBliskoKoncaZbrojenia){	//sprawdza czy strzemiê nie wypada poni¿ej kosza zbrojeniowego
+				
 		this->StrzemionaDuze[i].setWspolrzedneLinii(
 			linia.stworzLinieZeWspolrzednych(PPx, PPy, PKx, PKy));
 		this->StrzemionaDuze[i++].setNazwaWarstwy(zbrojenie);
-	
+		
 		//rysuje strzemiona ma³e
 		this->StrzemionaMale[j].setDaneKola(
 			circle.utworzKolo(PPx + przesuniecieStrzemionMalych.getX(), PPy + przesuniecieStrzemionMalych.getY(), 2 * kosz.StrzemionaMale[0].getSrednica() / 2));
 		this->StrzemionaMale[j++].setNazwaWarstwy(zbrojenie);
-	
+		
 		this->StrzemionaMale[j].setDaneKola(
 			circle.utworzKolo(PKx - przesuniecieStrzemionMalych.getX(), PPy + przesuniecieStrzemionMalych.getY(), 2 * kosz.StrzemionaMale[0].getSrednica() / 2));
 		this->StrzemionaMale[j++].setNazwaWarstwy(zbrojenie);
 		
-		PPy = PPy - kosz.StrzemionaDuze.getOdstepMiedzyPretami();
+		KtorePowtorzenie++;	
+		if(!(KtorePowtorzenie < kosz.UstawieniaKosza.getUkladStrzemion(NumerPozycji, 1))){
+			
+			if(NumerPozycji < (kosz.UstawieniaKosza.getIlePozycjiUkladStrzemion() - 1))				//sprawdza czy mamy jeszcze pozycje do u¿ycia; jeœli zosta³a tylko jedna, to przeskakuje do niej i za kolejnym razem nie zwiêkszy NumeruPozycji, czyli bêdzie korzysta³ przy dalszych strzemionach z ostatniej dostêpnej pozycji
+				NumerPozycji++;
+			KtorePowtorzenie = 0;
+			
+		}
+		
+		PPy = PPy - kosz.UstawieniaKosza.getUkladStrzemion(NumerPozycji, 0);
 		PKy = PPy;
-	
+		
 	}
-	
 }
 
 Punkt PrzekrojAA::punktPoczatkowyPretowNr7(koszZbrojeniowy kosz){
@@ -1573,14 +1698,14 @@ void PrzekrojAA::generujOpisyDoPretowNr9(UstawieniaRysunekKoszZbrojeniowy Ustawi
 
 void PrzekrojAA::generujWymiaryNormalne(UstawieniaRysunekKoszZbrojeniowy UstawieniaRysunku, koszZbrojeniowy kosz){
 	
-	int i=0;
-	int WspolrzednaLiniiWymiarowej;
+	int i = 0;
+	int WspolrzednaLiniiWymiarowej, PrzesuniecieWymiaru = 0;
 	float xp, yp, xk, yk;
 	
 	Punkt punktStartowy, punktKoncowy, punktLokalizacjiLiniiWymiarowej, punktLokalizacjiTekstuWymiaru;
 	ostringstream TekstZamiastWymiaru;	
 	
-	//wymiary poziome
+//wymiary poziome
 	int alfa = 0;
 	
 	//pierwsza linia wymiarowa
@@ -1613,12 +1738,18 @@ void PrzekrojAA::generujWymiaryNormalne(UstawieniaRysunekKoszZbrojeniowy Ustawie
 	
 	WspolrzednaLiniiWymiarowej = xk - UstawieniaRysunku.getOdstepWymiarowPoziomychPierwszejLinii();
 	
-	this->WymiaryNormalne[i++].generujPojedynczyWymiarNormalny(xp, yp, xk, yk, WspolrzednaLiniiWymiarowej, UstawieniaRysunku.getIleTekstWymiaruNadLinia(),	alfa);	
+	//sprawdza czy tekst wymiaru zmieœci siê w wymiarze; logarytm pozwala sprawdziæ iloœc cyfr w liczbie
+	PrzesuniecieWymiaru = 0;
+	if((yp - yk) < (((int)log10(yp - yk) + 1) * 10)) 
+		PrzesuniecieWymiaru = (yp - yk) / 2 + 2;
+	
+	this->WymiaryNormalne[i++].generujPojedynczyWymiarNormalny(xp, yp, xk, yk, WspolrzednaLiniiWymiarowej, UstawieniaRysunku.getIleTekstWymiaruNadLinia(),	alfa, 1, PrzesuniecieWymiaru);
+	PrzesuniecieWymiaru = 0; // czyœci zmienn¹;	
 	
 	//kolejny wymiar
 	
 	xp = xk;		//kontynuuje poprzedni wymiar
-	yp = yk;
+	yp = min(yp, yk); //czasami zbrojenie mo¿e byæ poni¿ej obrysu i wtedy musi odwrotnie punkty przepisaæ, ¿eby kontynuowaæ dobrze wymiar
 	xk = this->StrzemionaDuze[0].getWspolrzedneLinii().getPunktPoczatkowy().getX();
 	yk = this->StrzemionaDuze[0].getWspolrzedneLinii().getPunktPoczatkowy().getY(); 
 	
@@ -1627,35 +1758,209 @@ void PrzekrojAA::generujWymiaryNormalne(UstawieniaRysunekKoszZbrojeniowy Ustawie
 	//kolejny wymiar
 	//tutaj rozwi¹zanie przysz³oœciowe - dzieli strzemiona na odcinki o równy rozstawach i na tej podstawie rysuje wymiary
 	
-	int j = 0;
-	int OdlegloscStrzemion, PrzesuniecieWymiaru;
-	int PoprzedniNumerZmianyRozstawuStrzemion = 0;
+	int j = 0, k = 0;
+	bool CzyZostalPoprzedniWymiarDoRozrysowania[3] = {false, false, false}, RysujPoprzedniWymiar = false;
+	int PoprzedniePrzesuniecieWymiaru = 0;
+	ostringstream PoprzedniTekstZamiastWymiaru;
+	int IlePowtorzen, PoprzednieIlePowtorzen, OdlegloscStrzemion, PoprzedniaOdlegloscStrzemion, DlugoscTekstuWymiaruDlugi, PoprzedniaDlugoscTekstuWymiaruDlugi, DlugoscTekstuWymiaruKrotki, PoprzedniaDlugoscTekstuWymiaruKrotki;
+	float temp_yp, temp_yk, poprzednie_yp, poprzednie_yk;
 		
-	while(this->StrzemionaDuze[j].getNazwaWarstwy() != brak){
+	while(this->StrzemionaDuze[j + 1].getNazwaWarstwy() != brak){
 		
 		OdlegloscStrzemion = this->StrzemionaDuze[j].getWspolrzedneLinii().getPunktPoczatkowy().getY() - this->StrzemionaDuze[j + 1].getWspolrzedneLinii().getPunktPoczatkowy().getY();
 	
-		while(this->StrzemionaDuze[j].getWspolrzedneLinii().getPunktPoczatkowy().getY() - this->StrzemionaDuze[(j++) + 1].getWspolrzedneLinii().getPunktPoczatkowy().getY() == OdlegloscStrzemion)	;
+		IlePowtorzen = 1;
+		while(this->StrzemionaDuze[j + IlePowtorzen].getWspolrzedneLinii().getPunktPoczatkowy().getY() - this->StrzemionaDuze[j + 1 + IlePowtorzen].getWspolrzedneLinii().getPunktPoczatkowy().getY() == OdlegloscStrzemion)	
+			IlePowtorzen++;
 		
 		xp = xk;		//kontynuuje poprzedni wymiar
 		yp = yk;
-		xk = this->StrzemionaDuze[j - 1].getWspolrzedneLinii().getPunktPoczatkowy().getX();
-		yk = this->StrzemionaDuze[j - 1].getWspolrzedneLinii().getPunktPoczatkowy().getY();
+		xk = this->StrzemionaDuze[j + IlePowtorzen].getWspolrzedneLinii().getPunktPoczatkowy().getX();
+		yk = this->StrzemionaDuze[j + IlePowtorzen].getWspolrzedneLinii().getPunktPoczatkowy().getY();
 		
 		//czyszczenie zmiennej przechowuj¹cej tekst
 		TekstZamiastWymiaru.str("");
 		TekstZamiastWymiaru.clear();	 
 		
-		//tworzy tekst wymiaru LiczbaPretow x OdlegloscMiedzyPretami = DlugoscOdcinka
-		TekstZamiastWymiaru << j - PoprzedniNumerZmianyRozstawuStrzemion - 1 << "x" << OdlegloscStrzemion << "=" << (j - PoprzedniNumerZmianyRozstawuStrzemion - 1) * OdlegloscStrzemion;
+		//oblicza przybli¿on¹ d³ugoœæ tekstu wymiaru
+		TekstZamiastWymiaru << IlePowtorzen << "x" << OdlegloscStrzemion << "=" << IlePowtorzen * OdlegloscStrzemion;
+		DlugoscTekstuWymiaruDlugi = TekstZamiastWymiaru.str().length() * 10 - 5;
 		
-		//przesuwa wymiar jeœli jest za krótki i nie mieœci siê w liniach pomocniczych
-		PrzesuniecieWymiaru = 0;
-		if(yp - yk < 40)	PrzesuniecieWymiaru = -(yp - yk) - 20;
+		TekstZamiastWymiaru.str("");
+		TekstZamiastWymiaru.clear();
+		
+		//oblicza przybli¿on¹ d³ugoœæ tekstu wymiaru
+		TekstZamiastWymiaru << IlePowtorzen << "x" << OdlegloscStrzemion;
+		DlugoscTekstuWymiaruKrotki = TekstZamiastWymiaru.str().length() * 10 - 5;
+		
+		TekstZamiastWymiaru.str("");
+		TekstZamiastWymiaru.clear();
+		
+		//sprawdza czy wymiar w formie AxB=C bêdzie siê mieœci³ w liniach pomocniczych - jak nie to próbuje AxB, a na koniec jak trzeba to rozbija na pojedyncze wymiary
+		if(IlePowtorzen > 1 && (yp - yk) >= DlugoscTekstuWymiaruDlugi){
 			
-		this->WymiaryNormalne[i++].generujPojedynczyWymiarNormalny(xp, yp, xk, yk, WspolrzednaLiniiWymiarowej, UstawieniaRysunku.getIleTekstWymiaruNadLinia(),	alfa, 1, PrzesuniecieWymiaru, TekstZamiastWymiaru.str());
+			//tworzy tekst wymiaru LiczbaPretow x OdlegloscMiedzyPretami = DlugoscOdcinka
+			TekstZamiastWymiaru << IlePowtorzen << "x" << OdlegloscStrzemion << "=" << IlePowtorzen * OdlegloscStrzemion;			
+		}
+		else if(IlePowtorzen > 1 && (yp - yk) >= DlugoscTekstuWymiaruKrotki){				//dopuszcza mo¿liwoœæ skrócenia opisu do AxB
+			//tworzy tekst wymiaru LiczbaPretow x OdlegloscMiedzyPretami = DlugoscOdcinka
+			TekstZamiastWymiaru << IlePowtorzen << "x" << OdlegloscStrzemion;
+		}
+		else if(
+				this->WymiaryNormalne[i - 1].getTekstZamiastWymiaru().length() == 0
+				&& IlePowtorzen > 1 
+				&& (this->WymiaryNormalne[i - 1].getPunktStartowy().getY() - this->WymiaryNormalne[i - 1].getPunktKoncowy().getY()) / 2 >= DlugoscTekstuWymiaruDlugi + ((int)log10(this->WymiaryNormalne[i - 1].getPunktStartowy().getY() - this->WymiaryNormalne[i - 1].getPunktKoncowy().getY()) + 1) * 10 + 5){
+			
+					PrzesuniecieWymiaru = (yp - yk) / 2 + 2;
+					TekstZamiastWymiaru << IlePowtorzen << "x" << OdlegloscStrzemion << "=" << IlePowtorzen * OdlegloscStrzemion;
+		}
+		else if(
+				this->WymiaryNormalne[i - 1].getTekstZamiastWymiaru().length() == 0 
+				&& IlePowtorzen > 1 
+				&& (this->WymiaryNormalne[i - 1].getPunktStartowy().getY() - this->WymiaryNormalne[i - 1].getPunktKoncowy().getY())  / 2>= DlugoscTekstuWymiaruKrotki + ((int)log10(this->WymiaryNormalne[i - 1].getPunktStartowy().getY() - this->WymiaryNormalne[i - 1].getPunktKoncowy().getY()) + 1) * 10 + 5){
+			
+					PrzesuniecieWymiaru = (yp - yk) / 2 + 2;
+					TekstZamiastWymiaru << IlePowtorzen << "x" << OdlegloscStrzemion;
+		}
+		else if(
+				this->WymiaryNormalne[i - 1].getTekstZamiastWymiaru().length() > 0
+				&& IlePowtorzen > 1 
+				&& (this->WymiaryNormalne[i - 1].getPunktStartowy().getY() - this->WymiaryNormalne[i - 1].getPunktKoncowy().getY()) / 2 >= DlugoscTekstuWymiaruDlugi + this->WymiaryNormalne[i - 1].getTekstZamiastWymiaru().length() * 10 + 5){
+			
+					PrzesuniecieWymiaru = (yp - yk) / 2 + 2;
+					TekstZamiastWymiaru << IlePowtorzen << "x" << OdlegloscStrzemion << "=" << IlePowtorzen * OdlegloscStrzemion;
+		}
+		else if(
+				this->WymiaryNormalne[i - 1].getTekstZamiastWymiaru().length() > 0 
+				&& IlePowtorzen > 1 
+				&& (this->WymiaryNormalne[i - 1].getPunktStartowy().getY() - this->WymiaryNormalne[i - 1].getPunktKoncowy().getY())  / 2>= DlugoscTekstuWymiaruKrotki + this->WymiaryNormalne[i - 1].getTekstZamiastWymiaru().length() * 10 + 5){
+			
+					PrzesuniecieWymiaru = (yp - yk) / 2 + 2;
+					TekstZamiastWymiaru << IlePowtorzen << "x" << OdlegloscStrzemion;
+		}
+		else if(IlePowtorzen == 1){
+			// po prostu opuœciæ ten blok
+		}
+		else if(this->StrzemionaDuze[j + 1 + IlePowtorzen].getNazwaWarstwy() == brak){
+			
+			temp_yp = yp;
+			temp_yk = temp_yp - OdlegloscStrzemion;
+			
+			while(temp_yk >= yk){
+				
+				this->WymiaryNormalne[i++].generujPojedynczyWymiarNormalny(xp, temp_yp, xk, temp_yk, WspolrzednaLiniiWymiarowej, UstawieniaRysunku.getIleTekstWymiaruNadLinia(), alfa, 1);
+				
+				temp_yp = temp_yk;
+				temp_yk = temp_yp - OdlegloscStrzemion;
+			
+			}
+		}
+		else{			// jeœli nie uda³o siê narysowaæ d³ugiego wymiaru, zapisuje go w pamiêci, ¿eby sprawdziæ w kolejnym kroku pêtli jaki wymiar bêdzie poni¿ej; jak bêdzie du¿y, to zmieœci siê wymiar z przesuniêciem
+			poprzednie_yp = yp;
+			poprzednie_yk = yk;
+			PoprzedniaOdlegloscStrzemion = OdlegloscStrzemion;
+			PoprzednieIlePowtorzen = IlePowtorzen;
+			PoprzedniaDlugoscTekstuWymiaruDlugi = DlugoscTekstuWymiaruDlugi;
+			PoprzedniaDlugoscTekstuWymiaruKrotki = DlugoscTekstuWymiaruKrotki;
+			
+			for(k = 0; CzyZostalPoprzedniWymiarDoRozrysowania[k]; k++) ; //przeskakuje do ostatniej wartoœci true
+			
+			CzyZostalPoprzedniWymiarDoRozrysowania[k] = true;			
+		}
 		
-		PoprzedniNumerZmianyRozstawuStrzemion = j - 1;	
+		
+		if(RysujPoprzedniWymiar && !CzyZostalPoprzedniWymiarDoRozrysowania[1]){	//zaczyna od rozrysowania poprzedniego wymiaru je¿eli w poprzedniej kolejce nie uda³o siê - sprawdza czy da siê przesun¹æ w kierunku ni¿szego wymiaru
+		
+			if(
+				TekstZamiastWymiaru.str().length() > 0
+				&& (yp - yk) / 2 >= PoprzedniaDlugoscTekstuWymiaruDlugi + TekstZamiastWymiaru.str().length() * 10 + 5){ 
+				
+				PoprzedniePrzesuniecieWymiaru = -((poprzednie_yp - poprzednie_yk) / 2 + 2);
+				PoprzedniTekstZamiastWymiaru << PoprzednieIlePowtorzen << "x" << PoprzedniaOdlegloscStrzemion << "=" << PoprzednieIlePowtorzen * PoprzedniaOdlegloscStrzemion;
+				
+				this->WymiaryNormalne[i++].generujPojedynczyWymiarNormalny(xp, poprzednie_yp, xk, poprzednie_yk, WspolrzednaLiniiWymiarowej, UstawieniaRysunku.getIleTekstWymiaruNadLinia(), alfa, 1, PoprzedniePrzesuniecieWymiaru, PoprzedniTekstZamiastWymiaru.str());			
+			}
+			else if(
+				TekstZamiastWymiaru.str().length() > 0
+				&& (yp - yk) / 2 >= PoprzedniaDlugoscTekstuWymiaruKrotki + TekstZamiastWymiaru.str().length() * 10 + 5){ 
+				
+				PoprzedniePrzesuniecieWymiaru = -((poprzednie_yp - poprzednie_yk) / 2 + 2);
+				PoprzedniTekstZamiastWymiaru << PoprzednieIlePowtorzen << "x" << PoprzedniaOdlegloscStrzemion;
+				
+				this->WymiaryNormalne[i++].generujPojedynczyWymiarNormalny(xp, poprzednie_yp, xk, poprzednie_yk, WspolrzednaLiniiWymiarowej, UstawieniaRysunku.getIleTekstWymiaruNadLinia(), alfa, 1, PoprzedniePrzesuniecieWymiaru, PoprzedniTekstZamiastWymiaru.str());			
+			}
+			else if(
+				TekstZamiastWymiaru.str().length() == 0
+				&& (yp - yk) / 2 >= PoprzedniaDlugoscTekstuWymiaruDlugi + ((int)log10(yp - yk) + 1) * 10 + 5){ 
+				
+				PoprzedniePrzesuniecieWymiaru = -((poprzednie_yp - poprzednie_yk) / 2 + 2);
+				PoprzedniTekstZamiastWymiaru << PoprzednieIlePowtorzen << "x" << PoprzedniaOdlegloscStrzemion << "=" << PoprzednieIlePowtorzen * PoprzedniaOdlegloscStrzemion;
+				
+				this->WymiaryNormalne[i++].generujPojedynczyWymiarNormalny(xp, poprzednie_yp, xk, poprzednie_yk, WspolrzednaLiniiWymiarowej, UstawieniaRysunku.getIleTekstWymiaruNadLinia(), alfa, 1, PoprzedniePrzesuniecieWymiaru, PoprzedniTekstZamiastWymiaru.str());			
+			}
+			else if(
+				TekstZamiastWymiaru.str().length() == 0
+				&& (yp - yk) / 2 >= PoprzedniaDlugoscTekstuWymiaruKrotki + ((int)log10(yp - yk) + 1) * 10 + 5){ 
+				
+				PoprzedniePrzesuniecieWymiaru = -((poprzednie_yp - poprzednie_yk) / 2 + 2);
+				PoprzedniTekstZamiastWymiaru << PoprzednieIlePowtorzen << "x" << PoprzedniaOdlegloscStrzemion;
+				
+				this->WymiaryNormalne[i++].generujPojedynczyWymiarNormalny(xp, poprzednie_yp, xk, poprzednie_yk, WspolrzednaLiniiWymiarowej, UstawieniaRysunku.getIleTekstWymiaruNadLinia(), alfa, 1, PoprzedniePrzesuniecieWymiaru, PoprzedniTekstZamiastWymiaru.str());			
+			}
+			else{
+				temp_yp = poprzednie_yp;
+				temp_yk = temp_yp - PoprzedniaOdlegloscStrzemion;
+				
+				while(temp_yk >= poprzednie_yk){
+					
+					this->WymiaryNormalne[i++].generujPojedynczyWymiarNormalny(xp, temp_yp, xk, temp_yk, WspolrzednaLiniiWymiarowej, UstawieniaRysunku.getIleTekstWymiaruNadLinia(), alfa, 1);
+					
+					temp_yp = temp_yk;
+					temp_yk = temp_yp - PoprzedniaOdlegloscStrzemion;
+				}
+			}
+			
+			this->WymiaryNormalne[i++].generujPojedynczyWymiarNormalny(xp, yp, xk, yk, WspolrzednaLiniiWymiarowej, UstawieniaRysunku.getIleTekstWymiaruNadLinia(), alfa, 1, PrzesuniecieWymiaru, TekstZamiastWymiaru.str());
+			
+			for(k = 0; CzyZostalPoprzedniWymiarDoRozrysowania[k]; k++)		//czyœci wszystkie zmienne
+				CzyZostalPoprzedniWymiarDoRozrysowania[k] = false;
+			RysujPoprzedniWymiar = false;
+		}
+		else if(RysujPoprzedniWymiar){
+			
+			temp_yp = poprzednie_yp;
+			temp_yk = temp_yp - PoprzedniaOdlegloscStrzemion;
+			
+			while(temp_yk >= poprzednie_yk){
+				
+				this->WymiaryNormalne[i++].generujPojedynczyWymiarNormalny(xp, temp_yp, xk, temp_yk, WspolrzednaLiniiWymiarowej, UstawieniaRysunku.getIleTekstWymiaruNadLinia(), alfa, 1);
+				
+				temp_yp = temp_yk;
+				temp_yk = temp_yp - PoprzedniaOdlegloscStrzemion;
+			}
+			
+			temp_yp = yp;
+			temp_yk = temp_yp - OdlegloscStrzemion;
+			
+			while(temp_yk >= yk){
+				
+				this->WymiaryNormalne[i++].generujPojedynczyWymiarNormalny(xp, temp_yp, xk, temp_yk, WspolrzednaLiniiWymiarowej, UstawieniaRysunku.getIleTekstWymiaruNadLinia(), alfa, 1);
+				
+				temp_yp = temp_yk;
+				temp_yk = temp_yp - OdlegloscStrzemion;
+			}
+		}
+		else if(!CzyZostalPoprzedniWymiarDoRozrysowania[0]){
+			this->WymiaryNormalne[i++].generujPojedynczyWymiarNormalny(xp, yp, xk, yk, WspolrzednaLiniiWymiarowej, UstawieniaRysunku.getIleTekstWymiaruNadLinia(), alfa, 1, PrzesuniecieWymiaru, TekstZamiastWymiaru.str());
+		}
+		
+		if(CzyZostalPoprzedniWymiarDoRozrysowania[0]) //w nastêpnej kolejce musi zostaæ rozrysowany poprzedni wymiar
+			RysujPoprzedniWymiar = true;
+		
+		PrzesuniecieWymiaru = 0; // czyœci zmienn¹;
+		
+		//przeskakuje pozycje jeœli z³¹czy³ wymiary
+		j += IlePowtorzen;
 	}
 	//kolejny wymiar
 	
@@ -2422,8 +2727,8 @@ Punkt PretyWyrzucone::getPunktPoczatkowy(){
 
 void PretyWyrzucone::obmiarujPolilinie(Polilinia polilinia){
 	
-	int i = 0, k = 0;
-	Punkt p1, p2, srodekLuku;
+	int i = 0;
+	Punkt p1, p2;
 	Linia linia;
 	
 	//szuka w tablicy pierwszego wolnego miejsca na wymiar
@@ -2461,40 +2766,6 @@ void PretyWyrzucone::obmiarujPolilinie(Polilinia polilinia){
 			this->WymiaryNormalne[i].setDokladnosc(0);
 			
 			this->WymiaryNormalne[i++].setKatObrotuWymiaru(0);
-		}
-		else{
-			cout << endl << polilinia.getSrodekLuku(j - 1).getX() << "		##		" << polilinia.getSrodekLuku(j - 1).getY() << endl;
-		/*	p1 = polilinia.getVertex(j);
-			p2 = polilinia.getVertex(j + 1);
-			srodekLuku = polilinia.getSrodekLuku(j);
-			
-			linia.setPunktPoczatkowy(p1);
-			linia.setPunktKoncowy(p2);
-			
-			this->WymiarPromienia[k].setPunktStartowy(p1);
-			this->WymiarPromienia[k].setPunktKoncowy(p2);
-			
-			//wyznacza odsuniêcie linii wymiarowej
-			linia = linia.przesunRownolegle(2);
-			
-			p1.setX((linia.getPunktPoczatkowy().getX() + linia.getPunktKoncowy().getX()) / 2);
-			p1.setY((linia.getPunktPoczatkowy().getY() + linia.getPunktKoncowy().getY()) / 2);
-			
-			this->WymiarPromienia[k].setPunktLokalizacjiLiniiWymiarowej(p1);
-			
-			//wyznacza odsuniêcie tekstu wymiarowego		
-			linia = linia.przesunRownolegle(0);
-			
-			p1.setX((linia.getPunktPoczatkowy().getX() + linia.getPunktKoncowy().getX()) / 2);
-			p1.setY((linia.getPunktPoczatkowy().getY() + linia.getPunktKoncowy().getY()) / 2);
-			
-			this->WymiarPromienia[k].setPunktLokalizacjiTekstuWymiaru(p1);
-			this->WymiarPromienia[k].setAligned(1);
-			this->WymiarPromienia[k].setStyl("OPIS_ZBROJ");
-			this->WymiarPromienia[k].setDokladnosc(0);
-			
-			this->WymiarPromienia[k++].setKatObrotuWymiaru(0);*/
-			
 		}
 		
 	}
@@ -2686,7 +2957,7 @@ void PretyWyrzucone::generujPretyWyrzucone(UstawieniaRysunekKoszZbrojeniowy Usta
 	xp = this->getPunktPoczatkowy().getX();
 	yp = yp - polilinia.WysokoscPolilinii() - 20;
 	
-	polilinia = kosz.Uszy.GeometriaPreta2D.obrocPolilinie(-32);
+	polilinia = kosz.Uszy.GeometriaPreta2D.obrocPolilinie(-90);
 	
 	punkt.setX(xp);
 	punkt.setY(yp);
@@ -3276,7 +3547,7 @@ void RysunekKoszZbrojeniowy::generujRysunekKoszaZbrojeniowego(koszZbrojeniowy ko
 		this->PrzekrojAA.PretyNr7, zbrojenie);
 		
 	this->PrzekrojAA.generujPretyNr9(kosz);
-	
+
 	//generuje opisy
 	this->PrzekrojAA.generujOpisyPretow(this->UstawieniaRysunku, kosz);
 	this->PrzekrojAA.generujOpisyPretowNr7(this->UstawieniaRysunku, kosz);
@@ -3329,8 +3600,8 @@ void RysunekKoszZbrojeniowy::generujRysunekKoszaZbrojeniowego(koszZbrojeniowy ko
 	//Nazwa przekroju obliczeniowego jako nazwa pliku txt z danymi wejœciowymi	
 	
 	//Kosz zbrojeniowy AXXX nr X, X, X
-	punkt.setX(punktPoczatkowyPrzekrojBB.getX() + kosz.getSzerokoscKosza() / 2 + this->UstawieniaRysunku.getOdstepTytuluKoszy().getX());
-	punkt.setY(punktPoczatkowyPrzekrojBB.getY() + this->UstawieniaRysunku.getOdstepTytuluKoszy().getY());
+	punkt.setX(this->getPunktPoczatkowy().getX() + kosz.getSzerokoscKosza() / 2);
+	punkt.setY(this->Widok.PretyGlowne[0].getWspolrzedneLinii().getPunktPoczatkowy().getY() + this->UstawieniaRysunku.getOdstepTytuluKoszy().getY());
 	this->TekstyOpisowe[i].setPunktPoczatkowy(punkt);
 	
 	TrescLinii << "Kosz zbrojeniowy A" << to_string(kosz.getSzerokoscKosza()) << " nr X, X, X";
@@ -3369,13 +3640,29 @@ void RysunekKoszZbrojeniowy::generujRysunekKoszaZbrojeniowego(koszZbrojeniowy ko
 	
 	this->TekstyOpisowe[i++].setIleLinii(NrLinii);
 	
+	//PRÊTY WYRZUCONE	
+	TrescLinii.str("");
+	
+	punkt.setX(punktPoczatkowyPretyWyrzucone.getX() + kosz.getSzerokoscKosza() / 2 + this->UstawieniaRysunku.getOdstepNapisuPrzekrojBB().getX());
+	punkt.setY(punktPoczatkowyPretyWyrzucone.getY() + this->UstawieniaRysunku.getOdstepNapisuPrzekrojBB().getY());
+	this->TekstyOpisowe[i].setPunktPoczatkowy(punkt);
+	this->TekstyOpisowe[i].setWysokoscTekstu(7.5);
+	
+	NrLinii = 0;	
+	
+	TrescLinii << "skala 1:25";
+	this->TekstyOpisowe[i].LinieTekstu[NrLinii++] = TrescLinii.str();
+	TrescLinii.str("");
+	
+	this->TekstyOpisowe[i++].setIleLinii(NrLinii);
+
 }
 
 void RysunekKoszZbrojeniowy::rysujKosz(CreateDxf Draw){
 	
 	Draw.rysujLinie(this->Widok.poziomMurkowProwadzacych);
 	rysujWszystkieTekstyOpisowe(Draw, this->TekstyOpisowe, opisy);
-
+//	Draw.rysujWymiarPromienia(this->PrzekrojAA.WymiaryNormalne[0], wymiary);
 	 
 	//#################################################################### SCHEMAT ROZMIESZCZENIA PRÊTÓW G£ÓWNYCH	
 	Draw.rysujLinie(this->SchematRozmieszczeniaPretowGlownych.PretyGlowne);
@@ -3457,6 +3744,5 @@ void RysunekKoszZbrojeniowy::rysujKosz(CreateDxf Draw){
 	Draw.rysujPolilinie(this->PretyWyrzucone.GeometriaPretyWyrzucone);
 	rysujWszystkieOpisyPretZLiniaPoziomo(Draw, this->PretyWyrzucone.OpisPretyWyrzucone, opisy, 0);
 	rysujWszystkieWymiaryNormalne(Draw, this->PretyWyrzucone.WymiaryNormalne, wymiary);
-	rysujWszystkieWymiaryPromienia(Draw, this->PretyWyrzucone.WymiarPromienia, wymiary);
 	
 }

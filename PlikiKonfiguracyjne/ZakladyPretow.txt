@@ -1,0 +1,40 @@
+#
+#Informacje: 
+# Linie, które zaczynaj¹ siê od hashtaga s¹ komentarzami i program nie bierze ich pod uwagê - mo¿na tutaj pisaæ dowolne treœci
+# Kolejnoœæ pól komend nie powinna mieæ znaczenia - program sam wybierz w³aœciwe dane
+#
+# Program zaczyna czytaæ plik od komendy ZAKLADYPRETOW-START
+# Ni¿ej podajemy kolejne odstêpy strzemion - ka¿dy odstêp w nowej linii
+# Pierwszy wiersz to odleg³oœæ pierwszego strzemienia od wierzchu kosza
+# Jeœli chcemy jak¹ odleg³oœæ powtórzyæ X razy to po odleg³oœci zapisujemy *X, np. 15 cm przez 12 razy: 15*12
+#
+#
+#
+#
+ZAKLADYPRETOW-START
+PRET-FI6
+60
+PRET-FI8
+60
+PRET-FI10
+60
+PRET-FI12
+60
+PRET-FI14
+60
+PRET-FI16
+60
+PRET-FI18
+60x
+PRET-FI20
+89
+PRET-FI22
+105
+PRET-FI25
+140
+PRET-FI32
+160
+PRET-FI40
+60
+ZAKLADYPRETOW-KONIEC
+KONIEC-PLIKU

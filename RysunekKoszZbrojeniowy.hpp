@@ -72,7 +72,7 @@ class Widok{
 		LiniaDXF poziomMurkowProwadzacych[2];
 		
 		LiniaDXF PretyGlowne[25];
-		LiniaDXF Strzemiona[400];
+		LiniaDXF *Strzemiona = new LiniaDXF[400];
 		LiniaDXF Obrys[20];
 		PoliliniaDXF Uszy[5];
 		PoliliniaDXF PretyNr6[80];
@@ -116,19 +116,19 @@ class PrzekrojAA{
 		bool setPunktPoczatkowy(Punkt);
 		Punkt getPunktPoczatkowy();
 	
-		LiniaDXF Obrys[20];
-		LiniaDXF PretyGlowne[20];
-		LiniaDXF StrzemionaDuze[400];
-		CircleDXF StrzemionaMale[400];
+		LiniaDXF *Obrys = new LiniaDXF[20];
+		LiniaDXF *PretyGlowne = new LiniaDXF[20];
+		LiniaDXF *StrzemionaDuze = new LiniaDXF[400];
+		CircleDXF *StrzemionaMale = new CircleDXF[400];
 		PoliliniaDXF PretyNr7[130];
 		PoliliniaDXF PretyNr9[3];
 		
 		OpisPret OpisPretyGlowne[2][30];
-		OpisPret OpisPretyNr7[50];
-		OpisPret OpisPretyNr9[2];
+		OpisPret *OpisPretyNr7 = new OpisPret[50];
+		OpisPret *OpisPretyNr9 = new OpisPret[2];
 		
 		KotaWysokosciowa KotyWysokosciowe[25];
-		WymiarNormalny WymiaryNormalne[50];
+		WymiarNormalny WymiaryNormalne[100];
 		SymbolWykopGrunt SymbolWykopGrunt;
 		ZnacznikPrzekroju ZnacznikPrzekroju;
 		
@@ -200,7 +200,6 @@ class PretyWyrzucone{
 		OpisPret OpisPretyWyrzucone[30];
 		
 		WymiarNormalny WymiaryNormalne[150];
-		WymiarPromienia WymiarPromienia[20];
 		
 		void obmiarujPolilinie(Polilinia);
 		void generujPretyWyrzucone(UstawieniaRysunekKoszZbrojeniowy, koszZbrojeniowy);

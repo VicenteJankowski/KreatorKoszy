@@ -24,6 +24,8 @@ int zapisz_plik(string filename, string folderpath, fstream &save_file, int limi
 bool sprawdz_folder(string folderpath);
 void poprawnosc_pliku(string, fstream &file_verf);
 string pominKomentarze(fstream &file_verf);
+void czytaj_plik_ZakladyPretow(fstream &file_verf, UstawieniaKoszZbrojeniowy &UstawieniaKoszZbrojeniowy);
+void czytaj_plik_UkladStrzemion(fstream &file_verf, UstawieniaKoszZbrojeniowy &UstawieniaKoszZbrojeniowy);
 void czytaj_plik_kosz(fstream &file_verf, DaneWejscioweKosz &Dane);
 
 string przecinek2kropka(string linia);

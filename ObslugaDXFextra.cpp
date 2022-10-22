@@ -46,23 +46,6 @@ void rysujWszystkieWymiaryNormalne(CreateDxf Draw, WymiarNormalny WymiaryNormaln
 	
 }
 
-void rysujWszystkieWymiaryPromienia(CreateDxf Draw, WymiarPromienia WymiaryPromienia[], Warstwa typWarstwy, int LimitWymiarow){
-	
-	int i = 0;
-	
-	while(WymiaryPromienia[i].getKatObrotuWymiaru() != -360 && i < LimitWymiarow){
-		
-		Draw.rysujWymiarPromienia(
-			WymiaryPromienia[i],
-			typWarstwy); 
-		i++;		
-	}
-	
-	if(i >= LimitWymiarow)
-		throw "Wygenerowano wiêcej wymiarów niz dopuszcza pamiêæ programu.";
-	
-}
-
 void rysujWszystkieOpisyPretBezLinii(CreateDxf Draw, OpisPret Opisy[], Warstwa typWarstwy, int LimitOpisow){
 	
 	int i = 0;

@@ -530,14 +530,291 @@ string pominKomentarze(fstream &file_verf){
 	
 }
 
-void czytaj_plik_kosz(fstream &file_verf, DaneWejscioweKosz &Dane){
+void czytaj_plik_ZakladyPretow(fstream &file_verf, UstawieniaKoszZbrojeniowy &UstawieniaKoszZbrojeniowy){
 	
-	cout << "Wczytujê dane." << endl;
+	cout << "Wczytujê ustawienia zak³adów prêtów." << endl;
 	
 	string linia;
 	int line_limit = 0;
 
-	while(!file_verf.eof() && line_limit < 5000){
+	while(!file_verf.eof() && line_limit++ < 5000){
+		try{	
+			linia = pominKomentarze(file_verf);
+	
+			if(linia == "ZAKLADYPRETOW-START"){
+				
+				int i = 0;
+	
+				while(!file_verf.eof() && line_limit++ < 4000 && linia != "ZAKLADYPRETOW-KONIEC"){
+	
+					linia = pominKomentarze(file_verf);
+					
+					if(linia == "ZAKLADYPRETOW-KONIEC")
+						if(i == 0)
+							throw "B³¹d w pliku z ustawieniami zak³adów prêtów. Plik pusty.";
+						else
+							break;
+					
+					if(linia == "PRET-FI6"){
+						
+						linia = pominKomentarze(file_verf);
+						
+						if(!CzyToLiczba(linia))
+							cout << linia << ": Podany ci¹g znaków nie jest liczb¹. Dla tej œrednicy przyjêto domyœln¹ d³ugoœæ zak³adu równ¹ 100cm." << endl;
+						
+						UstawieniaKoszZbrojeniowy.setDlugoscZakladuPret(6, strtof(linia.c_str(), 0));
+						i++;
+						cout << "Pomyœlnie wczytano d³ugoœæ zak³adu prêtów fi 6 (" << UstawieniaKoszZbrojeniowy.getDlugoscZakladuPret(6) << "cm)." << endl;
+					}
+					if(linia == "PRET-FI8"){
+						
+						linia = pominKomentarze(file_verf);
+						
+						if(!CzyToLiczba(linia))
+							cout << linia << ": Podany ci¹g znaków nie jest liczb¹. Dla tej œrednicy przyjêto domyœln¹ d³ugoœæ zak³adu równ¹ 100cm." << endl;
+						
+						UstawieniaKoszZbrojeniowy.setDlugoscZakladuPret(8, strtof(linia.c_str(), 0));
+						i++;
+						cout << "Pomyœlnie wczytano d³ugoœæ zak³adu prêtów fi 8 (" << UstawieniaKoszZbrojeniowy.getDlugoscZakladuPret(8) << "cm)." << endl;
+					}	
+					if(linia == "PRET-FI10"){
+						
+						linia = pominKomentarze(file_verf);
+						
+						if(!CzyToLiczba(linia))
+							cout << linia << ": Podany ci¹g znaków nie jest liczb¹. Dla tej œrednicy przyjêto domyœln¹ d³ugoœæ zak³adu równ¹ 100cm." << endl;
+						
+						UstawieniaKoszZbrojeniowy.setDlugoscZakladuPret(10, strtof(linia.c_str(), 0));
+						i++;
+						cout << "Pomyœlnie wczytano d³ugoœæ zak³adu prêtów fi 10 (" << UstawieniaKoszZbrojeniowy.getDlugoscZakladuPret(10) << "cm)." << endl;
+					}
+					if(linia == "PRET-FI12"){
+						
+						linia = pominKomentarze(file_verf);
+						
+						if(!CzyToLiczba(linia))
+							cout << linia << ": Podany ci¹g znaków nie jest liczb¹. Dla tej œrednicy przyjêto domyœln¹ d³ugoœæ zak³adu równ¹ 100cm." << endl;
+						
+						UstawieniaKoszZbrojeniowy.setDlugoscZakladuPret(12, strtof(linia.c_str(), 0));
+						i++;
+						cout << "Pomyœlnie wczytano d³ugoœæ zak³adu prêtów fi 12 (" << UstawieniaKoszZbrojeniowy.getDlugoscZakladuPret(12) << "cm)." << endl;
+					}
+					if(linia == "PRET-FI14"){
+						
+						linia = pominKomentarze(file_verf);
+						
+						if(!CzyToLiczba(linia))
+							cout << linia << ": Podany ci¹g znaków nie jest liczb¹. Dla tej œrednicy przyjêto domyœln¹ d³ugoœæ zak³adu równ¹ 100cm." << endl;
+						
+						UstawieniaKoszZbrojeniowy.setDlugoscZakladuPret(14, strtof(linia.c_str(), 0));
+						i++;
+						cout << "Pomyœlnie wczytano d³ugoœæ zak³adu prêtów fi 14 (" << UstawieniaKoszZbrojeniowy.getDlugoscZakladuPret(14) << "cm)." << endl;
+					}
+					if(linia == "PRET-FI16"){
+						
+						linia = pominKomentarze(file_verf);
+						
+						if(!CzyToLiczba(linia))
+							cout << linia << ": Podany ci¹g znaków nie jest liczb¹. Dla tej œrednicy przyjêto domyœln¹ d³ugoœæ zak³adu równ¹ 100cm." << endl;
+						
+						UstawieniaKoszZbrojeniowy.setDlugoscZakladuPret(16, strtof(linia.c_str(), 0));
+						i++;
+						cout << "Pomyœlnie wczytano d³ugoœæ zak³adu prêtów fi 16 (" << UstawieniaKoszZbrojeniowy.getDlugoscZakladuPret(16) << "cm)." << endl;
+					}	
+					if(linia == "PRET-FI18"){
+						
+						linia = pominKomentarze(file_verf);
+						
+						if(!CzyToLiczba(linia))
+							cout << linia << ": Podany ci¹g znaków nie jest liczb¹. Dla tej œrednicy przyjêto domyœln¹ d³ugoœæ zak³adu równ¹ 100cm." << endl;
+						
+						UstawieniaKoszZbrojeniowy.setDlugoscZakladuPret(18, strtof(linia.c_str(), 0));
+						i++;
+						cout << "Pomyœlnie wczytano d³ugoœæ zak³adu prêtów fi 18 (" << UstawieniaKoszZbrojeniowy.getDlugoscZakladuPret(18) << "cm)." << endl;
+					}
+					if(linia == "PRET-FI20"){
+						
+						linia = pominKomentarze(file_verf);
+						
+						if(!CzyToLiczba(linia))
+							cout << linia << ": Podany ci¹g znaków nie jest liczb¹. Dla tej œrednicy przyjêto domyœln¹ d³ugoœæ zak³adu równ¹ 100cm." << endl;
+						
+						UstawieniaKoszZbrojeniowy.setDlugoscZakladuPret(20, strtof(linia.c_str(), 0));
+						i++;
+						cout << "Pomyœlnie wczytano d³ugoœæ zak³adu prêtów fi 20 (" << UstawieniaKoszZbrojeniowy.getDlugoscZakladuPret(20) << "cm)." << endl;
+					}	
+					if(linia == "PRET-FI22"){
+						
+						linia = pominKomentarze(file_verf);
+						
+						if(!CzyToLiczba(linia))
+							cout << linia << ": Podany ci¹g znaków nie jest liczb¹. Dla tej œrednicy przyjêto domyœln¹ d³ugoœæ zak³adu równ¹ 100cm." << endl;
+						
+						UstawieniaKoszZbrojeniowy.setDlugoscZakladuPret(22, strtof(linia.c_str(), 0));
+						i++;
+						cout << "Pomyœlnie wczytano d³ugoœæ zak³adu prêtów fi 22 (" << UstawieniaKoszZbrojeniowy.getDlugoscZakladuPret(22) << "cm)." << endl;
+					}
+					if(linia == "PRET-FI25"){
+						
+						linia = pominKomentarze(file_verf);
+						
+						if(!CzyToLiczba(linia))
+							cout << linia << ": Podany ci¹g znaków nie jest liczb¹. Dla tej œrednicy przyjêto domyœln¹ d³ugoœæ zak³adu równ¹ 100cm." << endl;
+						
+						UstawieniaKoszZbrojeniowy.setDlugoscZakladuPret(25, strtof(linia.c_str(), 0));
+						i++;
+						cout << "Pomyœlnie wczytano d³ugoœæ zak³adu prêtów fi 25 (" << UstawieniaKoszZbrojeniowy.getDlugoscZakladuPret(25) << "cm)." << endl;
+					}
+					if(linia == "PRET-FI32"){
+						
+						linia = pominKomentarze(file_verf);
+						
+						if(!CzyToLiczba(linia))
+							cout << linia << ": Podany ci¹g znaków nie jest liczb¹. Dla tej œrednicy przyjêto domyœln¹ d³ugoœæ zak³adu równ¹ 100cm." << endl;
+						
+						UstawieniaKoszZbrojeniowy.setDlugoscZakladuPret(32, strtof(linia.c_str(), 0));
+						i++;
+						cout << "Pomyœlnie wczytano d³ugoœæ zak³adu prêtów fi 32 (" << UstawieniaKoszZbrojeniowy.getDlugoscZakladuPret(32) << "cm)." << endl;
+					}
+					if(linia == "PRET-FI40"){
+						
+						linia = pominKomentarze(file_verf);
+						
+						if(!CzyToLiczba(linia))
+							cout << linia << ": Podany ci¹g znaków nie jest liczb¹. Dla tej œrednicy przyjêto domyœln¹ d³ugoœæ zak³adu równ¹ 100cm." << endl;
+						
+						UstawieniaKoszZbrojeniowy.setDlugoscZakladuPret(40, strtof(linia.c_str(), 0));
+						i++;
+						cout << "Pomyœlnie wczytano d³ugoœæ zak³adu prêtów fi 40 (" << UstawieniaKoszZbrojeniowy.getDlugoscZakladuPret(40) << "cm)." << endl;
+					}						
+						
+				}
+			
+			}				
+				
+		}catch(const char* ErrorTekst){
+			
+			cout << ErrorTekst << endl;
+			cout << "Nie uda³o siê wczytaæ ustawieñ zak³adu prêtów. Przyjêto domyœlny zak³ad równy 100cm dla wszystkich œrednic." << endl;
+		}
+	}
+}
+
+void czytaj_plik_UkladStrzemion(fstream &file_verf, UstawieniaKoszZbrojeniowy &UstawieniaKoszZbrojeniowy){
+	
+	cout << "Wczytujê uk³ad strzemion." << endl;
+	
+	string linia;
+	int line_limit = 0;
+
+	while(!file_verf.eof() && line_limit++ < 5000){
+		try{	
+			linia = pominKomentarze(file_verf);
+	
+			if(linia == "UKLADSTRZEMION-START"){
+				
+				int i = 0;
+	
+				while(!file_verf.eof() && line_limit++ < 4000){
+	
+					linia = pominKomentarze(file_verf);
+					
+					if(linia == "UKLADSTRZEMION-KONIEC")
+						if(i == 0)
+							throw "B³¹d w pliku z uk³adem strzemion. Uk³ad strzemion pusty.";
+						else
+							break;
+								
+					
+						
+						//podzia³ stringa wzglêdem znaku "*"
+						int IleGwiazdek = 0;
+						stringstream ss(linia);
+		    			string PodzialLinii[10];
+		    			
+		    			//wydziela z wiersza odleg³oœæ i iloœæ powtórzeñ odleg³oœci
+						while (getline(ss, PodzialLinii[IleGwiazdek++], '*')) ;
+						IleGwiazdek--;
+						
+						if(IleGwiazdek > 0)
+							if(!CzyToLiczba(PodzialLinii[0]) || !CzyToLiczba(PodzialLinii[0]))
+								throw "B³¹d w pliku z uk³adem strzemion. Podany ci¹g znaków nie jest liczb¹.";
+							else{
+								if(IleGwiazdek == 1){
+									UstawieniaKoszZbrojeniowy.setUkladStrzemion(strtof(PodzialLinii[0].c_str(), 0), i, 0);
+									UstawieniaKoszZbrojeniowy.setUkladStrzemion(1.0, i++, 1);
+									
+									cout << "Pozycja nr " << i << ": " << UstawieniaKoszZbrojeniowy.getUkladStrzemion(i - 1, 0) << endl;	
+								}
+								else if(IleGwiazdek > 1){
+									UstawieniaKoszZbrojeniowy.setUkladStrzemion(stof(PodzialLinii[0]), i, 0);
+									UstawieniaKoszZbrojeniowy.setUkladStrzemion(stof(PodzialLinii[1]), i++, 1);
+							
+									if(IleGwiazdek != 2)
+										cout << "W pozycji nr " << i << " wykryto wiêcej ni¿ jeden mno¿nik. Przyjêto liczbê powtórzeñ równ¹ " << PodzialLinii[1] << endl;
+									
+									cout << "Pozycja nr " << i << ": " << UstawieniaKoszZbrojeniowy.getUkladStrzemion(i - 1, 0) << "*" << UstawieniaKoszZbrojeniowy.getUkladStrzemion(i - 1, 1) << endl;
+								}			
+							}
+						else if(IleGwiazdek == 0)
+							throw "B³¹d w pliku z uk³adem strzemion. Uk³ad strzemion pusty lub pusty wiersz.";
+						else
+							throw "B³¹d w pliku z uk³adem strzemion. Niespotykany b³¹d.";
+				}
+				
+				UstawieniaKoszZbrojeniowy.setIlePozycjiUkladStrzemion(i);			
+				cout << "Uda³o siê wczytaæ " << UstawieniaKoszZbrojeniowy.getIlePozycjiUkladStrzemion() << " pozycji strzemion." << endl;
+			
+			}				
+				
+		}catch(const char* ErrorTekst){
+			UstawieniaKoszZbrojeniowy.setUkladStrzemion(10, 0, 0);
+			UstawieniaKoszZbrojeniowy.setUkladStrzemion(1, 0, 1);
+			UstawieniaKoszZbrojeniowy.setUkladStrzemion(15, 1, 0);
+			UstawieniaKoszZbrojeniowy.setUkladStrzemion(2, 1, 1);
+			UstawieniaKoszZbrojeniowy.setUkladStrzemion(30, 2, 0);
+			UstawieniaKoszZbrojeniowy.setUkladStrzemion(1, 2, 1);
+			UstawieniaKoszZbrojeniowy.setIlePozycjiUkladStrzemion(3);
+			
+			cout << ErrorTekst << endl;
+			cout << "Nie uda³o siê wczytaæ uk³adu strzemion. Przyjêto domyœlny rozstaw 10cm, 15cm*2, 30cm." << endl;
+		}
+		try{	
+	
+			if(linia == "MIN-ODLEGLOSC-OD-KONCA-KOSZA"){
+				
+				linia = pominKomentarze(file_verf);
+				if(file_verf.eof()) 
+					throw "B³¹d w pliku z uk³adem strzemion. Koniec pliku wczeœniej ni¿ siê spodziewano2.";
+				
+				if(!CzyToLiczba(linia))
+					throw "B³¹d w pliku z uk³adem strzemion. Podany ci¹g znaków w minimalnej odleg³oœci od koñca kosza nie jest liczb¹.";
+				else{
+					
+					UstawieniaKoszZbrojeniowy.setMinOdlegloscStrzemieniaOdKoncaKosza(strtof(linia.c_str(), 0));
+					
+					cout << "Uda³o siê wczytaæ minimaln¹ odleg³oœæ ostatniego strzemienia od koñca kosza równ¹ " << UstawieniaKoszZbrojeniowy.getMinOdlegloscStrzemieniaOdKoncaKosza() << endl;
+					
+				}	
+			}			
+				
+		}catch(const char* ErrorTekst){	
+			UstawieniaKoszZbrojeniowy.setMinOdlegloscStrzemieniaOdKoncaKosza(10);
+			
+			cout << ErrorTekst << endl;
+			cout << "Nie uda³o siê wczytaæ minimaln¹ odleg³oœæ ostatniego strzemienia od koñca kosza. Przyjêto wartoœæ domyœln¹ równ¹ 10cm." << endl;
+		}
+	}
+}
+
+void czytaj_plik_kosz(fstream &file_verf, DaneWejscioweKosz &Dane){
+	
+	cout << "Wczytujê dane koszy zbrojeniowych." << endl;
+	
+	string linia;
+	int line_limit = 0;
+
+	while(!file_verf.eof() && line_limit++ < 5000){
 			
 		linia = pominKomentarze(file_verf);
 		
