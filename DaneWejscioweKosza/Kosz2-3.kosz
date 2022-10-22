@@ -1,0 +1,35 @@
+#
+#MIEJSCE NA OPIS
+#
+#Informacje: 
+# Linie, które zaczynaj¹ siê od hashtaga s¹ komentarzami i program nie bierze ich pod uwagê - mo¿na tutaj pisaæ dowolne treœci
+# Kolejnoœæ pól komend nie powinna mieæ znaczenia - program sam wybierz w³aœciwe dane
+#
+KOSZ-START
+RZEDNA-WIERZCHU-SCIANY
+-1.00
+RZEDNA-WIERZCHU-ZBROJENIA
+-1.07
+RZEDNA-SPODU-ZBROJENIA
+-7.57
+RZEDNA-SPODU-SCIANY
+-14.15
+POZIOM-MURKOW-PROWADZACYCH
+-1
+SZEROKOSC-SCIANY
+60
+SZEROKOSCI-KOSZA
+280
+KONIEC-SZEROKOSCI-KOSZA
+ZBROJENIE-GLOWNE-GRUNT
+#Ile prêtów na metr
+5
+#Œrednica prêtów
+16
+ZBROJENIE-GLOWNE-WYKOP
+#Ile prêtów na metr
+5
+#Œrednica prêtów
+16
+
+KOSZ-KONIEC

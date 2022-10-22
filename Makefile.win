@@ -1,0 +1,55 @@
+# Project: Projekt1
+# Makefile created by Dev-C++ 5.11
+
+CPP      = g++.exe -D__DEBUG__
+CC       = gcc.exe -D__DEBUG__
+WINDRES  = windres.exe
+OBJ      = KreatorKoszy_v2.o ObslugaDXF.o koszZbrojeniowy.o elementyGeometryczne.o RysunekKoszZbrojeniowy.o ObslugaDXFextra.o UstawieniaRysunekKoszZbrojeniowy.o UstawieniaKoszZbrojeniowy.o ElementyOpisoweRysunku.o ObslugaPlikow.o
+LINKOBJ  = KreatorKoszy_v2.o ObslugaDXF.o koszZbrojeniowy.o elementyGeometryczne.o RysunekKoszZbrojeniowy.o ObslugaDXFextra.o UstawieniaRysunekKoszZbrojeniowy.o UstawieniaKoszZbrojeniowy.o ElementyOpisoweRysunku.o ObslugaPlikow.o
+LIBS     = -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib" -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib" -static-libgcc -g3
+INCS     = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include"
+CXXINCS  = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include/c++"
+BIN      = KreatorKoszy-projekt.exe
+CXXFLAGS = $(CXXINCS) -g3 -std=c++11
+CFLAGS   = $(INCS) -g3 -std=c++11
+RM       = rm.exe -f
+
+.PHONY: all all-before all-after clean clean-custom
+
+all: all-before $(BIN) all-after
+
+clean: clean-custom
+	${RM} $(OBJ) $(BIN)
+
+$(BIN): $(OBJ)
+	$(CPP) $(LINKOBJ) -o $(BIN) $(LIBS)
+
+KreatorKoszy_v2.o: KreatorKoszy_v2.cpp
+	$(CPP) -c KreatorKoszy_v2.cpp -o KreatorKoszy_v2.o $(CXXFLAGS)
+
+ObslugaDXF.o: ObslugaDXF.cpp
+	$(CPP) -c ObslugaDXF.cpp -o ObslugaDXF.o $(CXXFLAGS)
+
+koszZbrojeniowy.o: koszZbrojeniowy.cpp
+	$(CPP) -c koszZbrojeniowy.cpp -o koszZbrojeniowy.o $(CXXFLAGS)
+
+elementyGeometryczne.o: elementyGeometryczne.cpp
+	$(CPP) -c elementyGeometryczne.cpp -o elementyGeometryczne.o $(CXXFLAGS)
+
+RysunekKoszZbrojeniowy.o: RysunekKoszZbrojeniowy.cpp
+	$(CPP) -c RysunekKoszZbrojeniowy.cpp -o RysunekKoszZbrojeniowy.o $(CXXFLAGS)
+
+ObslugaDXFextra.o: ObslugaDXFextra.cpp
+	$(CPP) -c ObslugaDXFextra.cpp -o ObslugaDXFextra.o $(CXXFLAGS)
+
+UstawieniaRysunekKoszZbrojeniowy.o: UstawieniaRysunekKoszZbrojeniowy.cpp
+	$(CPP) -c UstawieniaRysunekKoszZbrojeniowy.cpp -o UstawieniaRysunekKoszZbrojeniowy.o $(CXXFLAGS)
+
+UstawieniaKoszZbrojeniowy.o: UstawieniaKoszZbrojeniowy.cpp
+	$(CPP) -c UstawieniaKoszZbrojeniowy.cpp -o UstawieniaKoszZbrojeniowy.o $(CXXFLAGS)
+
+ElementyOpisoweRysunku.o: ElementyOpisoweRysunku.cpp
+	$(CPP) -c ElementyOpisoweRysunku.cpp -o ElementyOpisoweRysunku.o $(CXXFLAGS)
+
+ObslugaPlikow.o: ObslugaPlikow.cpp
+	$(CPP) -c ObslugaPlikow.cpp -o ObslugaPlikow.o $(CXXFLAGS)
